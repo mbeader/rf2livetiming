@@ -1,0 +1,9 @@
+module.exports = {
+  HTTP_LISTEN_PORT: 8080, // port to listen for HTTP clients
+  RF2_LISTEN_PORT: 6789, // port to which the rF2 plugin sends data
+  IPV4_LOOPBACK: '127.0.0.1', // if loopback IP for some reason is different, change this
+  PAGE_BANNER: 'banner.gif', // path to banner displayed at top of timing page
+  PAGE_TITLE: 'Lap Times', // <title>
+  PAGE_MESSAGE: 'JOIN WECJR', // Text displayed under banner
+  JOIN_LINK: 'steam://run/365960//+connect 127.0.0.1:64297' // link for joining rF2 server at <IP>:<port>
+};
