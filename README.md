@@ -9,7 +9,6 @@ Serves best laps to client and updates in real time using socket.io.
 * Place rf2livetiming.dll in the 64-bit rF2 plugins folder 
 * Install node and npm
 * Run `npm install`
-* Copy/rename config.js.example to config.js
 * Configure config.js
 * Run `npm start` or run `npm test` to run directly in cmd
 * Start the rF2 dedicated server
