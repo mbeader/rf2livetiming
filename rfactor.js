@@ -145,18 +145,36 @@ function xml2Obj(xml) {
 }
 
 function getDriversMap(veh) {
+  if(veh.length == 0)
+    return;
   let drivers = new Object();
   for(let i = 0; i < veh.length; i++) {
     let vehicle = new Object();
     vehicle.name = veh[i].vehname;
     vehicle.vehclass = veh[i].vehclass;
+    vehicle.place = veh[i].place
     drivers[veh[i].drivername] = vehicle;
   }
   return drivers;
 }
 
+function compareDriversMaps(a, b) {
+  if(Object.keys(a).length != Object.keys(b).length)
+    return false;
+  let flag = true;
+  Object.keys(a).forEach(function(name, index) {
+    if(typeof b[name] !== "undefined") {
+      if(a[name].name != b[name].name || a[name].vehclass != b[name].vehclass || a[name].place != b[name].place)
+        flag = false;
+    } else
+      flag = false;
+  });
+  return flag;
+}
+
 module.exports = {
   parseUDPPacket: parseUDPPacket,
   parseResultStream: parseResultStream,
-  getDriversMap: getDriversMap
+  getDriversMap: getDriversMap,
+  compareDriversMaps: compareDriversMaps
 }

@@ -2,7 +2,7 @@
 
 Receives data from the included rF2 plugin by UDP on loopback.
 Tracks best sector and lap times by the combination of track, driver name, vehicle name, and vehicle class.
-Serves best laps to client and updates in real time using socket.io. 
+Serves best laps and current drivers to client and updates in real time using socket.io. 
 
 ## Setup
 
@@ -28,7 +28,7 @@ Serves best laps to client and updates in real time using socket.io.
 * Display data such as best sectors and timestamp
 * Rethink use of objects
 * Identify drivers as AI
-* Display session time and driver list
+* Display session time
 * Display live lap information
 * View hotlap db for other tracks not currently on server
 * View race results files

@@ -1,6 +1,6 @@
 {
   "name": "rf2livetiming",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "description": "rFactor 2 server-side live timing",
   "main": "server.js",
   "scripts": {

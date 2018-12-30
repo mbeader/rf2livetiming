@@ -3,8 +3,7 @@ body {
   color: #000000;
   font-size: 10pt;
   font-family: arial,helvetica,sans-serif;
-  margin: auto;
-  width: 50%;
+  margin: auto 1%;
 }
 
 #info {
@@ -23,15 +22,44 @@ body {
   font-weight: bold;
 }
 
+.main-wrapper {
+  text-align: center;
+}
+
+.table-wrapper {
+  display: inline-block;
+  text-align: left;
+  margin: auto 10px;
+  vertical-align: top;
+}
+
 table {
   width: 100%;
   border: 1px solid #B7C5D9;
   margin-bottom: 15px;
 }
 
+table caption {
+  caption-side: top;
+  text-align: left;
+  padding-left: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
 th {
   text-align: left;
   color: #0F0C5D;
+}
+
+td, th {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.time {
+  text-align: right;
 }
 
 #banner {

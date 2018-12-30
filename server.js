@@ -12,6 +12,8 @@ const hotlaps = require('./hotlaps');
 var state = new Object();
 state.track = '';
 state.session = '';
+state.drivers;
+var timer;
 
 server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
@@ -62,6 +64,9 @@ function handler (req, res) {
         res.end(content, 'utf-8');
       });
       break;
+    default:
+      res.writeHead(404, {'Content-type': 'text/html'});
+      res.end('404 File not found', 'utf-8');
   }
 }
 
@@ -82,7 +87,8 @@ userver.on('error', (err) => {
 });
 
 userver.on('message', (msg, rinfo) => {
-  //console.log(rinfo.address + ':' + rinfo.port);
+  if(typeof timer !== "undefined")
+    clearTimeout(timer);
   let packet = rfactor.parseUDPPacket(msg);
   if(packet.trackname != state.track || packet.sessionname != state.session) {
     state.track = packet.trackname;
@@ -90,6 +96,20 @@ userver.on('message', (msg, rinfo) => {
     io.emit('session', state);
   }
   let drivers = rfactor.getDriversMap(packet.veh);
+  if(typeof drivers !== "undefined") {
+    if(typeof state.drivers !== "undefined") {
+      if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
+        io.emit('drivers', drivers);
+        state.drivers = drivers;
+      }
+    } else {
+      io.emit('drivers', drivers);
+      state.drivers = drivers;
+    }
+  } else if(typeof state.drivers !== "undefined") {
+    io.emit('drivers', drivers);
+    state.drivers = drivers;
+  }
   let result = rfactor.parseResultStream(packet.results);
   if(typeof result === "undefined")
     console.log('udef');
@@ -101,6 +121,14 @@ userver.on('message', (msg, rinfo) => {
       io.emit('hotlap', updates);
     }
   }
+  timer = setTimeout(function() {
+    console.log('rF2 server offline');
+    state = new Object();
+    state.track = hotlaps.getTrack();
+    state.session = '';
+    state.drivers = null;
+    io.emit('session', state);
+  }, 5000);
 });
 
 userver.on('listening', () => {
