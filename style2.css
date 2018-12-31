@@ -69,4 +69,11 @@ td, th {
 .even {
   background-color: #D6DAF0;
 }
-  
+
+.pbest {
+  background-color: #b5bd68;
+}
+
+.cbest {
+  background-color: #b294bb;
+}

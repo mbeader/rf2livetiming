@@ -22,8 +22,6 @@ Serves best laps and current drivers to client and updates in real time using so
 
 ## TODO
 
-* Overhaul updating the table in the client
-* Indicate new best laps
 * Make plugin configurable
 * Display data such as best sectors and timestamp
 * Rethink use of objects

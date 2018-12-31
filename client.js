@@ -1,5 +1,7 @@
 var socket = io('/');
-var hotlaps;
+var hltable;
+var classbests = new Object();
+var newupdates = [];
 
 socket.on('session', function (state) {
   if(state.session == '') {
@@ -10,20 +12,22 @@ socket.on('session', function (state) {
 });
 
 socket.on('hotlap', function (laps) {
-  let found = false;
-  for(let i = 0; i < laps.length; i++) {
-    for(let j = 0; j < hotlaps.length; j++) {
-      if(hotlaps[j].name == laps[i].name && hotlaps[j].vehclass == laps[i].vehclass && hotlaps[j].veh == laps[i].veh) {
-        hotlaps[j].bestlap = laps[i].bestlap;
-        found = true;
-        break;
-      }
+  updateHotlapsTable(laps);
+  sortHotlapsTable();
+  for(let i = 0; i < newupdates.length; i++) {
+    if(Number.parseFloat(newupdates[i].children[7].textContent) == classbests[newupdates[i].children[3].textContent]) {
+      newupdates[i].classList.add('cbest');
+      setTimeout(function(e) {
+        e.classList.remove('cbest');
+      }, 10000, newupdates[i]);
+    } else {
+      newupdates[i].classList.add('pbest');
+      setTimeout(function(e) {
+        e.classList.remove('pbest');
+      }, 10000, newupdates[i]);
     }
-    if(!found)
-      hotlaps.push(laps[i]);
   }
-  hotlaps.sort(compareHotlaps);
-  buildTable(hotlaps);
+  newupdates = [];
 });
 
 socket.on('drivers', function (drivers) {
@@ -43,8 +47,8 @@ function initLoad(e) {
       document.getElementById('info').textContent = res.info.session + ' @ ' + res.info.track;
     else if(res.info.track !== '')
       document.getElementById('info').textContent = res.info.track;
-    hotlaps = hotlaps2List(res.data);
-    buildTable(hotlaps);
+    hltable = document.getElementById('hotlaps').getElementsByTagName('tbody')[0];
+    buildHotlapsTable(hotlaps2List(res.data));
     if(typeof res.info.drivers !== "undefined" && res.info.drivers !== null) {
       buildLiveTable(drivers2List(res.info.drivers));
     } else
@@ -68,7 +72,6 @@ function hotlaps2List(data) {
       });
     });
   });
-  list.sort(compareHotlaps);
   return list;
 }
 
@@ -97,9 +100,11 @@ function updateDrivers(drivers) {
 }  
 
 function compareHotlaps(a, b) {
-  if (a.bestlap.t < b.bestlap.t)
+  let at = Number.parseFloat(a.children[7].textContent);
+  let bt = Number.parseFloat(b.children[7].textContent);
+  if (at < bt)
     return -1;
-  if (a.bestlap.t > b.bestlap.t)
+  if (at > bt)
     return 1;
   return 0;
 }
@@ -112,38 +117,78 @@ function compareDrivers(a, b) {
   return 0;
 }
 
-function buildTable(laps) {
-  let t = '';
+function updateHotlapsTable(laps) {
+  let found = false;
   for(let i = 0; i < laps.length; i++) {
-    if(i % 2 == 0)
-      t += '<tr class="even">';
-    else
-      t += '<tr>';
-    t += '<td>' + (i + 1) + '</td>';
-    t += '<td>' + laps[i].name + '</td>';
-    t += '<td>' + laps[i].veh + '</td>';
-    t += '<td>' + laps[i].vehclass + '</td>';
-    if(laps[i].bestlap.s1 == undefined)
-      t += '<td class="time">-</td>';
-    else
-      t += '<td class="time">' + laps[i].bestlap.s1.toFixed(3) + '</td>';
-    if(laps[i].bestlap.s2 == undefined)
-      t += '<td class="time">-</td>';
-    else
-      t += '<td class="time">' + laps[i].bestlap.s2.toFixed(3) + '</td>';
-    if(laps[i].bestlap.s3 == undefined)
-      t += '<td class="time">-</td>';
-    else
-      t += '<td class="time">' + laps[i].bestlap.s3.toFixed(3) + '</td>';
-    t += '<td class="time">' + laps[i].bestlap.t.toFixed(3) + '</td></tr>';
+    for(let j = 0; j < hltable.children.length; j++) {
+      if(hltable.children[j].children[1].textContent == laps[i].name && hltable.children[j].children[3].textContent == laps[i].vehclass && hltable.children[j].children[2].textContent == laps[i].veh) {
+        if(Number.parseFloat(hltable.children[j].children[7].textContent) > laps[i].bestlap.t) {
+          hltable.children[j].children[4].textContent = laps[i].bestlap.s1.toFixed(3);
+          hltable.children[j].children[5].textContent = laps[i].bestlap.s2.toFixed(3);
+          hltable.children[j].children[6].textContent = laps[i].bestlap.s3.toFixed(3);
+          hltable.children[j].children[7].textContent = laps[i].bestlap.t.toFixed(3);
+          newupdates.push(hltable.children[j]);
+        }
+        found = true;
+        break;
+      }
+    }
+    if(!found) {
+      let temp = createHotlapsElement(laps[i]);
+      hltable.appendChild(temp);
+      newupdates.push(temp);
+    }
   }
-  document.getElementById('hotlaps').getElementsByTagName('tbody')[0].innerHTML = t;
+}
+
+function createHotlapsElement(lap) {
+  let e = document.createElement('tr');
+  let t = '';
+  t += '<td></td>';
+  t += '<td>' + lap.name + '</td>';
+  t += '<td>' + lap.veh + '</td>';
+  t += '<td>' + lap.vehclass + '</td>';
+  if(lap.bestlap.s1 == undefined)
+    t += '<td class="time">-</td>';
+  else
+    t += '<td class="time">' + lap.bestlap.s1.toFixed(3) + '</td>';
+  if(lap.bestlap.s2 == undefined)
+    t += '<td class="time">-</td>';
+  else
+    t += '<td class="time">' + lap.bestlap.s2.toFixed(3) + '</td>';
+  if(lap.bestlap.s3 == undefined)
+    t += '<td class="time">-</td>';
+  else
+    t += '<td class="time">' + lap.bestlap.s3.toFixed(3) + '</td>';
+  t += '<td class="time">' + lap.bestlap.t.toFixed(3) + '</td>';
+  e.innerHTML = t;
+  return e;
+}
+
+function sortHotlapsTable() {
+  let list = Array.from(hltable.children).sort(compareHotlaps);
+  for(let i = 0; i < list.length; i++) {
+    list[i].firstElementChild.textContent = i+1;
+    if(i % 2 != 0)
+      list[i].classList.add('even');
+    else
+      list[i].classList.remove('even');
+    let c = list[i].children[3].textContent;
+    if(typeof classbests[c] === "undefined" || classbests[c] > Number.parseFloat(list[i].children[7].textContent))
+      classbests[c] = Number.parseFloat(list[i].children[7].textContent);
+    hltable.appendChild(list[i]);
+}
+
+function buildHotlapsTable(laps) {
+  for(let i = 0; i < laps.length; i++)
+    hltable.appendChild(createHotlapsElement(laps[i]));
+  sortHotlapsTable();
 }
 
 function buildLiveTable(drivers) {
   let t = '';
   for(let i = 0; i < drivers.length; i++) {
-    if(i % 2 == 0)
+    if(i % 2 != 0)
       t += '<tr class="even">';
     else
       t += '<tr>';
