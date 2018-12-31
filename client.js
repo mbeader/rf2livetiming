@@ -6,7 +6,7 @@ var newupdates = [];
 socket.on('session', function (state) {
   if(state.session == '') {
     document.getElementById('info').textContent = state.track;
-    updateDrivers(state.drivers)
+    updateDrivers(state.drivers);
   } else
     document.getElementById('info').textContent = state.session + ' @ ' + state.track;
 });
@@ -177,6 +177,7 @@ function sortHotlapsTable() {
     if(typeof classbests[c] === "undefined" || classbests[c] > Number.parseFloat(list[i].children[7].textContent))
       classbests[c] = Number.parseFloat(list[i].children[7].textContent);
     hltable.appendChild(list[i]);
+  }
 }
 
 function buildHotlapsTable(laps) {
