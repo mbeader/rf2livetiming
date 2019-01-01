@@ -91,9 +91,12 @@ userver.on('message', (msg, rinfo) => {
     clearTimeout(timer);
   let packet = rfactor.parseUDPPacket(msg);
   if(packet.trackname != state.track || packet.sessionname != state.session) {
+    if(packet.trackname != state.track)
+      io.emit('refresh');
     state.track = packet.trackname;
     state.session = packet.sessionname;
     io.emit('session', state);
+    hotlaps.onUpdate(packet.trackname, packet.sessionname, null, [])
   }
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {

@@ -34,6 +34,11 @@ socket.on('drivers', function (drivers) {
   updateDrivers(drivers);
 });
 
+socket.on('refresh', function () {
+  console.log('GOT');
+  location.reload(true);
+});
+
 document.addEventListener('DOMContentLoaded', initLoad, false);
 function initLoad(e) {
   let req = new XMLHttpRequest();
