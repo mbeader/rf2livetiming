@@ -19,14 +19,17 @@ function parseScoringPacket(msg, p)  {
   p.trackname = msg.toString('ascii', 5, pointer);
   p.sessionid = msg.readUInt32LE(++pointer);
   switch(p.sessionid) {
-    case 1: p.sessionname = "Practice";
+    case 0: p.sessionname = "Test Day";
     break;
-    case 5: p.sessionname = "Qualifying";
+    case 1: case 2: case 3: case 4: p.sessionname = "Practice " + p.sessionid;
+    break;
+    case 5: case 6: case 7: case 8: p.sessionname = "Qualifying " + (p.sessionid - 4);
     break;
     case 9: p.sessionname = "Warmup";
     break;
-    case 10: p.sessionname = "Race";
+    case 10: case 11: case 12: case 13: p.sessionname = "Race " + (p.sessionid - 9);
     break;
+    default: p.sessionname = "Unknown";
   }
   pointer += 4;
   p.currtime = msg.readDoubleLE(pointer);
