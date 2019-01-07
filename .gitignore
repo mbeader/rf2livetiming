@@ -1,3 +1,10 @@
+# rf2livetiming
+config.js
+state.json
+hotlaps/
+banner.gif
+pid.json
+
 # Logs
 logs
 *.log
