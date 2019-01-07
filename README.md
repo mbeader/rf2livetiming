@@ -6,7 +6,9 @@ Serves best laps and current drivers to client and updates in real time using so
 
 ## Setup
 
-* Place rf2livetiming.dll in the 64-bit rF2 plugins folder 
+* Place rf2livetiming.dll in the 64-bit rF2 plugins folder
+* Place rf2livetiming.ini in the rF2 root folder
+* Configure rf2livetiming.ini
 * Install node and npm
 * Run `npm install`
 * Configure config.js
@@ -16,13 +18,11 @@ Serves best laps and current drivers to client and updates in real time using so
 
 ## Notes
 
-* Currently only supports 64-bit rFactor 2
-* Plugin currently is hardcoded to send packets to port 6789
-* rF2 is Windows only, this program is Windows only
+* Currently only tested with 64-bit rFactor 2
+* rF2 is Windows only, this program is currently Windows only
 
 ## TODO
 
-* Make plugin configurable
 * Display data such as best sectors and timestamp
 * Rethink use of objects
 * Identify drivers as AI
