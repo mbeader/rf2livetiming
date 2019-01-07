@@ -52,8 +52,9 @@ function handler (req, res) {
         res.end(content, 'utf-8');
       });
     break;
-    case '/style.css':
-      fs.readFile('style.css', function(error, content) {
+    case '/TomorrowNight.css':
+    case '/FourLeaves.css':
+      fs.readFile(path.join('css', uri.pathname), function(error, content) {
         res.writeHead(200, {'Content-type': 'text/css'});
         res.end(content, 'utf-8');
       });
