@@ -14,6 +14,7 @@ state.track = '';
 state.session = '';
 state.drivers;
 var timer;
+var mapnamespace = io.of('/map');
 
 server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
@@ -46,8 +47,13 @@ function handler (req, res) {
       content.data = hotlaps.getData();
       res.end(JSON.stringify(content), 'utf-8');
       break;
+    case '/map':
+      res.writeHead(200, {'Content-type': 'text/html'});
+      let cntnt = '<html><head><script type ="application/javascript" src="/socket.io/socket.io.js"></script><script type ="application/javascript" src="map.js"></script></head><body><canvas id="map" width="1000" height="1000"></canvas></body></html>'
+      res.end(cntnt, 'utf-8');
     case '/client.js':
-      fs.readFile('client.js', function(error, content) {
+    case '/map.js':
+      fs.readFile(path.join('.', uri.pathname), function(error, content) {
         res.writeHead(200, {'Content-type': 'application/javascript'});
         res.end(content, 'utf-8');
       });
@@ -88,9 +94,13 @@ userver.on('error', (err) => {
 });
 
 userver.on('message', (msg, rinfo) => {
+  if(rinfo.address != config.RF2_SRC_ADDR)
+    return;
   if(typeof timer !== "undefined")
     clearTimeout(timer);
   let packet = rfactor.parseUDPPacket(msg);
+  if(typeof packet === "undefined")
+    return;
   if(packet.trackname != state.track || packet.sessionname != state.session) {
     if(packet.trackname != state.track)
       io.emit('refresh');
@@ -101,6 +111,7 @@ userver.on('message', (msg, rinfo) => {
   }
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
+    mapnamespace.emit('map', rfactor.getVehPos(packet.veh));
     if(typeof state.drivers !== "undefined") {
       if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
         io.emit('drivers', drivers);

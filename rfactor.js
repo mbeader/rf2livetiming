@@ -9,6 +9,8 @@ function parseUDPPacket(msg)  {
   p.type = msg.readUInt8(4);
   if(p.type == 2)
     return parseScoringPacket(msg, p);
+  else 
+    return;
 }
 
 function parseScoringPacket(msg, p)  {
@@ -175,9 +177,22 @@ function compareDriversMaps(a, b) {
   return flag;
 }
 
+function getVehPos(veh) {
+  let pos = new Object();
+  for(let i = 0; i < veh.length; i++) {
+    let vehicle = new Object();
+    vehicle.x = veh[i].posx;
+    vehicle.y = veh[i].posy;
+    vehicle.p = veh[i].place
+    pos[veh[i].place] = vehicle;
+  }
+  return pos;
+}
+
 module.exports = {
   parseUDPPacket: parseUDPPacket,
   parseResultStream: parseResultStream,
   getDriversMap: getDriversMap,
-  compareDriversMaps: compareDriversMaps
+  compareDriversMaps: compareDriversMaps,
+  getVehPos: getVehPos
 }
