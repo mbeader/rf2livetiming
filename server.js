@@ -8,6 +8,7 @@ const url  = require('url');
 const config = require('./config');
 const rfactor = require('./rfactor');
 const hotlaps = require('./hotlaps');
+const mapbuilder = require('./mapbuilder');
 
 var state = new Object();
 state.track = '';
@@ -15,6 +16,7 @@ state.session = '';
 state.drivers;
 var timer;
 var mapnamespace = io.of('/map');
+var exists = false;
 
 server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
@@ -107,11 +109,16 @@ userver.on('message', (msg, rinfo) => {
     state.track = packet.trackname;
     state.session = packet.sessionname;
     io.emit('session', state);
+    exists = mapbuilder.start(packet.trackname);
     hotlaps.onUpdate(packet.trackname, packet.sessionname, null, [])
   }
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
-    mapnamespace.emit('map', rfactor.getVehPos(packet.veh));
+    mapnamespace.emit('veh', rfactor.getVehPos(packet.veh));
+    if(!exists)
+      exists = mapbuilder.onUpdate(packet.veh);
+    if(exists)
+      mapnamespace.emit('map', mapbuilder.getTrackMap(packet.veh));
     if(typeof state.drivers !== "undefined") {
       if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
         io.emit('drivers', drivers);

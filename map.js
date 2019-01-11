@@ -1,22 +1,37 @@
 var socket = io('/map');
 var canvas;
 var context;
+var track;
 
-socket.on('map', function (veh) {
-  //console.log(Object.keys(veh).length);
-  /*for(let i = 0; i < Object.keys(veh).length; i++) {
-    console.log(veh[i].x + ',' + veh[i].y);
-    ctx.fillStyle = 'green';
-    ctx.fillRect(veh[i].x, veh[i].y, veh[i].x+10, veh[i].y+10);
-  }*/
+socket.on('veh', function (veh) {
   context.clearRect(0, 0, canvas.width, canvas.height);
+  if(typeof track !== "undefined") {
+      context.lineWidth = 15;
+      context.strokeStyle = 'blue';
+      context.beginPath();
+      for(let i = 0; i < track.s1.length; i++)
+        context.lineTo(track.s1[i].x+500, 500-track.s1[i].y);
+      context.lineTo(track.s2[0].x+500, 500-track.s2[0].y);
+      context.stroke();
+      context.strokeStyle = 'green';
+      context.beginPath();
+      for(let i = 0; i < track.s2.length; i++)
+        context.lineTo(track.s2[i].x+500, 500-track.s2[i].y);
+      context.lineTo(track.s3[0].x+500, 500-track.s3[0].y);
+      context.stroke();
+      context.strokeStyle = 'red';
+      context.beginPath();
+      for(let i = 0; i < track.s3.length; i++)
+        context.lineTo(track.s3[i].x+500, 500-track.s3[i].y);
+      context.lineTo(track.s1[0].x+500, 500-track.s1[0].y);
+      context.stroke();
+    }
   Object.keys(veh).slice().reverse().forEach(function(num, index) {
-    //console.log(veh[num].x + ',' + veh[num].y);
-    //context.fillStyle = 'green';
-    //context.fillRect(veh[num].x+500, 500-veh[num].y, 10, 10);
+    context.strokeStyle = 'black';
     context.fillStyle = 'white';
+    context.lineWidth = 2;
     context.beginPath();
-    context.arc(veh[num].x+500, 500-veh[num].y, 10, 0, Math.PI * 2, true); // Outer circle
+    context.arc(veh[num].x+500, 500-veh[num].y, 10, 0, Math.PI * 2, true);
     context.stroke();
     context.fill();
     context.fillStyle = 'black';
@@ -24,6 +39,10 @@ socket.on('map', function (veh) {
     context.textAlign = 'center';
     context.fillText(num, veh[num].x+500, 500-veh[num].y+4);
   });
+});
+
+socket.on('map', function (map) {
+  track = map;
 });
 
 document.addEventListener('DOMContentLoaded', initLoad, false);
