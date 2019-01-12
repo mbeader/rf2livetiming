@@ -183,7 +183,8 @@ function getVehPos(veh) {
     let vehicle = new Object();
     vehicle.x = veh[i].posx;
     vehicle.y = veh[i].posy;
-    vehicle.p = veh[i].place
+    vehicle.p = veh[i].place;
+    vehicle.c = veh[i].vehclass;
     pos[veh[i].place] = vehicle;
   }
   return pos;

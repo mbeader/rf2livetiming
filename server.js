@@ -9,6 +9,7 @@ const config = require('./config');
 const rfactor = require('./rfactor');
 const hotlaps = require('./hotlaps');
 const mapbuilder = require('./mapbuilder');
+const classcolors = require('./classes');
 
 var state = new Object();
 state.track = '';
@@ -88,6 +89,12 @@ io.on('connection', function (socket) {
   }
 });
 
+mapnamespace.on('connection', function (socket) {
+  mapnamespace.emit('classes', classcolors);
+  if(exists)
+    mapnamespace.emit('map', mapbuilder.getTrackMap());
+});
+
 const userver = dgram.createSocket('udp4');
 
 userver.on('error', (err) => {
@@ -115,10 +122,11 @@ userver.on('message', (msg, rinfo) => {
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
     mapnamespace.emit('veh', rfactor.getVehPos(packet.veh));
+    let temp = exists;
     if(!exists)
       exists = mapbuilder.onUpdate(packet.veh);
-    if(exists)
-      mapnamespace.emit('map', mapbuilder.getTrackMap(packet.veh));
+    if(temp !== exists)
+      mapnamespace.emit('map', mapbuilder.getTrackMap());
     if(typeof state.drivers !== "undefined") {
       if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
         io.emit('drivers', drivers);
