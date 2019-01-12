@@ -6,7 +6,7 @@ var map;
 var bestpaths = [];
 var besttime = 0;
 var currpaths = new Object();
-
+var currtrack;
 
 function loadMap(track) {
   let temp;
@@ -35,7 +35,14 @@ function loadMap(track) {
   return temp;
 }
 
+function saveMap() {
+  fs.writeFile(path.normalize('maps/' + currtrack + '.json'), JSON.stringify(map), (err) => {
+    if (err) throw err;
+  });
+}
+
 function start(track) {
+  currtrack = track;
   map = loadMap(track);
   bestpaths = [];
   currpaths = new Object();
@@ -43,7 +50,6 @@ function start(track) {
 }
 
 function onUpdate(veh) {
-  // add with lastlap
   for(let i = 0; i < veh.length; i++) {
     if(typeof currpaths[veh[i].drivername] === "undefined") {
       currpaths[veh[i].drivername] = createPath(veh[i].laps, veh[i].posx, veh[i].posy);
@@ -109,6 +115,7 @@ function testEnd() {
     console.log('maxy: ' + map.maxy + '\tminy: ' + map.miny);
     bestpaths = [];
     currpaths = new Object();
+    saveMap();
   }
   return exists;
 }
