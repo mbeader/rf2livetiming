@@ -2,8 +2,11 @@ var socket = io('/map');
 var canvas;
 var context;
 var track;
+var dy, dx, cy = 0, cx = 0;
+var dim;
 var classcolors;
 var colors = ['red', 'blue', 'lime', 'yellow', 'magenta', 'aqua', 'orange', 'white', 'gray', 'silver'];
+var edges = {maxx: Number.MIN_SAFE_INTEGER, minx: Number.MAX_SAFE_INTEGER, maxy: Number.MIN_SAFE_INTEGER, miny: Number.MAX_SAFE_INTEGER};
 
 socket.on('veh', function (veh) {
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -20,6 +23,7 @@ socket.on('veh', function (veh) {
   }
 
   let fillcolor, textcolor;
+  let changed = false;
   Object.keys(veh).slice().reverse().forEach(function(num, index) {
     if(typeof classcolors[veh[num].c] !== "undefined") {
       fillcolor = classcolors[veh[num].c].color;
@@ -35,22 +39,45 @@ socket.on('veh', function (veh) {
       classcolors[veh[num].c].color = fillcolor;
       classcolors[veh[num].c].text = textcolor;
     }
+    if(typeof track === "undefined") {
+      if(edges.maxx < veh[num].x) {
+        edges.maxx = veh[num].x;
+        changed = true;
+      } else if(edges.minx > veh[num].x) {
+        edges.minx = veh[num].x;
+        changed = true;
+      } if(edges.maxy < veh[num].y) {
+        edges.maxy = veh[num].y;
+        changed = true;
+      } else if(edges.miny > veh[num].y) {
+        edges.miny = veh[num].y;
+        changed = true;
+      }
+    }
     context.strokeStyle = 'black';
     context.fillStyle = fillcolor;
     context.lineWidth = 2;
     context.beginPath();
-    context.arc(veh[num].x+500, 500-veh[num].y, 10, 0, Math.PI * 2, true);
+    context.arc(veh[num].x+dim-cx, dim-veh[num].y+cy, 10, 0, Math.PI * 2, true);
     context.stroke();
     context.fill();
     context.fillStyle = textcolor;
     context.font = '12px serif';
     context.textAlign = 'center';
-    context.fillText(num, veh[num].x+500, 500-veh[num].y+4);
+    context.fillText(num, veh[num].x+dim-cx, dim-veh[num].y+cy+4);
   });
+  if(changed) {
+    cx = (edges.maxx + edges.minx)/2;
+    cy = (edges.maxy + edges.miny)/2;
+  }
 });
 
 socket.on('map', function (map) {
   track = map;
+  dx = track.maxx - track.minx;
+  dy = track.maxy - track.miny;
+  cx = (track.maxx + track.minx)/2;
+  cy = (track.maxy + track.miny)/2;
 });
 
 socket.on('classes', function (colors) {
@@ -64,23 +91,24 @@ document.addEventListener('DOMContentLoaded', initLoad, false);
 function initLoad(e) {
   canvas = document.getElementById('map');
   context = canvas.getContext('2d');
+  dim = canvas.width/2;
 }
 
 function drawSector(sector, end, color) {
   context.strokeStyle = color;
     context.beginPath();
     for(let i = 0; i < sector.length; i++)
-      context.lineTo(sector[i].x+500, 500-sector[i].y);
-    context.lineTo(end.x+500, 500-end.y);
+      context.lineTo(sector[i].x+dim-cx, dim-sector[i].y+cy);
+    context.lineTo(end.x+dim-cx, dim-end.y+cy);
     context.stroke();
 }
 
 function drawSectorMarker(prev, center, next) {
   let angle = -1*Math.atan2(next.y - prev.y, next.x - prev.x);
   context.save();
-  context.translate(center.x+500, 500-center.y);
+  context.translate(center.x+dim-cx, dim-center.y+cy);
   context.rotate(angle);
-  context.translate(-1*(center.x+500), -1*(500-center.y));
-  context.fillRect(center.x+500-3, 500-center.y-15, 6, 30);
+  context.translate(-1*(center.x+dim-cx), -1*(dim-center.y+cy));
+  context.fillRect(center.x+dim-cx-3, dim-center.y+cy-15, 6, 30);
   context.restore();
 }

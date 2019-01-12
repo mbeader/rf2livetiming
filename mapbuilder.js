@@ -98,10 +98,32 @@ function testEnd() {
     map.s1 = bestpaths[0].s1;
     map.s2 = bestpaths[0].s2;
     map.s3 = bestpaths[0].s3;
+    map.maxx = map.s1[0].x;
+    map.maxy = map.s1[0].y;
+    map.minx = map.s1[0].x;
+    map.miny = map.s1[0].y;
+    findMapEdges(map.s1);
+    findMapEdges(map.s2);
+    findMapEdges(map.s3);
+    console.log('maxx: ' + map.maxx + '\tminx: ' + map.minx);
+    console.log('maxy: ' + map.maxy + '\tminy: ' + map.miny);
     bestpaths = [];
     currpaths = new Object();
   }
   return exists;
+}
+
+function findMapEdges(s) {
+  for(let i = 0; i < s.length; i++) {
+    if(s[i].x > map.maxx)
+      map.maxx = s[i].x;
+    else if(s[i].x < map.minx)
+      map.minx = s[i].x;
+    if(s[i].y > map.maxy)
+      map.maxy = s[i].y;
+    else if(s[i].y < map.miny)
+      map.miny = s[i].y;
+  }
 }
 
 function compareLaps(a, b) {
