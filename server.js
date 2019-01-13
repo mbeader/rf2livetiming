@@ -36,9 +36,8 @@ function handler (req, res) {
     case '/init':
       res.writeHead(200, {'Content-type': 'application/json'});
       let content = new Object();
-      content.banner = config.PAGE_BANNER;
-      content.title = config.PAGE_TITLE;
-      content.message = config.PAGE_MESSAGE;
+      content.title = config.BASE_TITLE;
+      content.heading = config.PAGE_HEADING;
       content.link = config.JOIN_LINK;
       if(state.track == '') {
         let temp = new Object();

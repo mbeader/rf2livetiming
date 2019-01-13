@@ -3,7 +3,7 @@ body {
   color: #c5c8c6;
   font-size: 10pt;
   font-family: arial,helvetica,sans-serif;
-  margin: auto 1%;
+  margin: 8px 0px;
 }
 
 #info {
@@ -76,4 +76,38 @@ td, th {
 
 .cbest {
   background-color: #72507c;
+}
+
+main {
+  margin: auto 1%;
+}
+
+header {
+  border-bottom: 4px solid #282a2e;
+  padding-bottom: 8px;
+}
+
+header > * {
+  margin: auto 1%;
+}
+
+header h1 {
+  display: inline;
+}
+
+nav {
+  float: right;
+  vertical-align: middle;
+  line-height: 31px;
+}
+
+nav a {
+  margin-left: 20px;
+  font-size: 16pt;
+  color: #81a2be;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: #de935f;
 }

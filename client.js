@@ -45,9 +45,7 @@ function initLoad(e) {
   req.addEventListener('load', function () {
     let res = JSON.parse(this.responseText);
     document.title = res.title;
-    document.getElementById('banner').firstElementChild.setAttribute('src', '/' + res.banner);
-    document.getElementById('message').firstElementChild.textContent = res.message;
-    document.getElementById('message').firstElementChild.setAttribute('href',  res.link)
+    document.getElementById('heading').textContent = res.heading;
     if(res.info.track !== '' && res.info.session !== '')
       document.getElementById('info').textContent = res.info.session + ' @ ' + res.info.track;
     else if(res.info.track !== '')
