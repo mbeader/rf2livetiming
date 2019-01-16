@@ -14,7 +14,14 @@ const classcolors = require('./classes');
 var state = new Object();
 state.track = '';
 state.session = '';
+state.currtime = 0;
+state.endtime = null;
+state.maxlaps =  null;
 state.drivers;
+state.phase = new Object();
+state.phase.name = '';
+state.phase.yellow = '';
+state.phase.sectors = [0,0,0];
 var timer;
 var mapnamespace = io.of('/map');
 var exists = false;
@@ -109,14 +116,28 @@ userver.on('message', (msg, rinfo) => {
   let packet = rfactor.parseUDPPacket(msg);
   if(typeof packet === "undefined")
     return;
-  if(packet.trackname != state.track || packet.sessionname != state.session) {
+  if(packet.trackname != state.track || packet.sessionname != state.session || state.currtime > packet.currtime) {
     if(packet.trackname != state.track)
       io.emit('refresh');
     state.track = packet.trackname;
     state.session = packet.sessionname;
+    state.currtime = packet.currtime;
+    state.endtime = packet.endtime;
+    state.maxlaps =  packet.maxlaps;
+    state.phase.name = packet.phasename;
+    state.phase.yellow = packet.yellowname;
+    state.phase.sectors = packet.sectorflag;
     io.emit('session', state);
     exists = mapbuilder.start(packet.trackname);
     hotlaps.onUpdate(packet.trackname, packet.sessionname, null, [])
+  } else {
+    state.currtime = packet.currtime;
+    if(state.phase.name != packet.phasename || state.phase.yellow != packet.yellowname || state.phase.sectors[0] != packet.sectorflag[0] || state.phase.sectors[1] != packet.sectorflag[1] || state.phase.sectors[2] != packet.sectorflag[2]) {
+      state.phase.name = packet.phasename;
+      state.phase.yellow = packet.yellowname;
+      state.phase.sectors = packet.sectorflag;
+      io.emit('phase', state.phase);
+    }
   }
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
@@ -155,7 +176,14 @@ userver.on('message', (msg, rinfo) => {
     state = new Object();
     state.track = hotlaps.getTrack();
     state.session = '';
+    state.currtime = 0;
+    state.endtime = null;
+    state.maxlaps =  null;
     state.drivers = null;
+    state.phase = new Object();
+    state.phase.name = '';
+    state.phase.yellow = '';
+    state.phase.sectors = [0,0,0];
     io.emit('session', state);
   }, 5000);
 });

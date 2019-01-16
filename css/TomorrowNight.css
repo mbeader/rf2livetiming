@@ -6,7 +6,7 @@ body {
   margin: 8px 0px;
 }
 
-#info {
+#session {
   text-align: center;
   color: #c5c8c6;
   font-size: 14pt;
@@ -104,10 +104,48 @@ nav {
 nav a {
   margin-left: 20px;
   font-size: 16pt;
+}
+
+a {
   color: #81a2be;
   text-decoration: none;
 }
 
-nav a:hover {
+a:hover {
   color: #de935f;
+}
+
+#info {
+  margin-bottom: 5px;
+}
+
+#info > div {
+  text-align: center;
+  font-size: 16px;
+}
+
+#join {
+  float:left;
+}
+
+#remaining {
+  float:right;
+}
+
+#sectors:before {
+  content: " —";
+}
+
+#sectors span:before {
+  content: " ";
+}
+
+.yellow {
+  background-color: #f0c674;
+  color: #1d1f21;
+}
+
+.yellow:before {
+  background-color: #1d1f21;
+  color: #c5c8c6;
 }

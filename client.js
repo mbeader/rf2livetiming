@@ -2,13 +2,24 @@ var socket = io('/');
 var hltable;
 var classbests = new Object();
 var newupdates = [];
+var rtime;
+var timelastset;
+var rtimeinterval;
 
 socket.on('session', function (state) {
   if(state.session == '') {
-    document.getElementById('info').textContent = state.track;
+    document.getElementById('session').textContent = state.track;
+    updatePhase(null);
     updateDrivers(state.drivers);
-  } else
-    document.getElementById('info').textContent = state.session + ' @ ' + state.track;
+  } else {
+    document.getElementById('session').textContent = state.session + ' @ ' + state.track;
+    updatePhase(state.phase);
+  }
+  setRemainingTime(state.currtime, state.endtime);
+});
+
+socket.on('phase', function (phase) {
+  updatePhase(phase);
 });
 
 socket.on('hotlap', function (laps) {
@@ -46,10 +57,15 @@ function initLoad(e) {
     let res = JSON.parse(this.responseText);
     document.title = res.title;
     document.getElementById('heading').textContent = res.heading;
-    if(res.info.track !== '' && res.info.session !== '')
-      document.getElementById('info').textContent = res.info.session + ' @ ' + res.info.track;
-    else if(res.info.track !== '')
-      document.getElementById('info').textContent = res.info.track;
+    document.getElementById('join').href = res.link;
+    if(res.info.track !== '' && res.info.session !== '') {
+      document.getElementById('session').textContent = res.info.session + ' @ ' + res.info.track;
+      updatePhase(res.info.phase);
+    } else if(res.info.track !== '') {
+      document.getElementById('session').textContent = res.info.track;
+      updatePhase(null);
+    }
+    setRemainingTime(res.info.currtime, res.info.endtime);
     hltable = document.getElementById('hotlaps').getElementsByTagName('tbody')[0];
     buildHotlapsTable(hotlaps2List(res.data));
     if(typeof res.info.drivers !== "undefined" && res.info.drivers !== null) {
@@ -202,4 +218,60 @@ function buildLiveTable(drivers) {
     t += '<td>' + drivers[i].vehclass + '</td></tr>';
   }
   document.getElementById('live').getElementsByTagName('tbody')[0].innerHTML = t;
+}
+
+function setRemainingTime(currtime, endtime) {
+  if(endtime !== null) {
+    rtime = endtime - currtime;
+    timelastset = new Date();
+    clearInterval(rtimeinterval);
+    rtimeinterval = setInterval(updateRemainingTime, 1000);
+    updateRemainingTime();
+    document.getElementById('rtime').style.display = '';
+  } else {
+    clearInterval(rtimeinterval);
+    document.getElementById('rtime').style.display = 'none';
+  }
+}
+
+function updateRemainingTime() {
+  let t = rtime - Math.floor((new Date()-timelastset)/1000);
+  if(t < 0) {
+    t = 0;
+    clearInterval(rtimeinterval);
+  }
+  let hours = Math.floor(t/3600);
+  let minutes = Math.floor((t - hours*3600)/60);
+  let seconds = Math.floor(t % 60);
+  let str = '';
+  if(hours != 0)
+    str += hours + ':';
+  if(minutes < 10)
+    str += '0' + minutes + ':';
+  else
+    str += minutes + ':';
+  if(seconds < 10)
+    str += '0' + seconds;
+  else
+    str += seconds;
+  document.getElementById('rtime').textContent = str;
+}
+
+function updatePhase(phase) {
+  if(phase === null) {
+    document.getElementById('phase').textContent = 'Server Offline';
+    document.getElementById('sectors').style.display = 'none';
+  } else {
+    document.getElementById('sectors').style.display = '';
+    if(phase.name == 'FCY')
+      document.getElementById('phase').textContent = phase.name + ' (' +  phase.yellow + ')';
+    else
+      document.getElementById('phase').textContent = phase.name;
+    for(let i = 0; i < 3; i++) {
+      if(phase.sectors[i] !== 11)
+        document.getElementById('sectors').children[i].className = 'yellow';
+      else
+        document.getElementById('sectors').children[i].className = '';
+    }
+  }
 }

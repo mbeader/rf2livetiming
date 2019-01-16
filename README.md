@@ -23,11 +23,10 @@ Serves best laps and current drivers to client and updates in real time using so
 
 ## TODO
 
-* Display data such as best sectors and timestamp
+* Main page with map, live timing, best laps and chat
+* Separate pages for live timing, map, best laps
 * Rethink use of objects
 * Identify drivers as AI
-* Display session time
-* Display live lap information
 * View hotlap db for other tracks not currently on server
 * View race results files
 * Driver ranking

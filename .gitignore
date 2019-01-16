@@ -3,7 +3,7 @@ config.js
 classes.js
 state.json
 hotlaps/
-banner.gif
+maps/
 pid.json
 *.zip
 

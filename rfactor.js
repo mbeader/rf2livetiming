@@ -37,13 +37,61 @@ function parseScoringPacket(msg, p)  {
   p.currtime = msg.readDoubleLE(pointer);
   pointer += 8;
   p.endtime = msg.readDoubleLE(pointer);
+  if(p.endtime == -2147483648)
+    p.endtime = null;
   pointer += 8;
+  p.maxlaps = msg.readUInt32LE(pointer);
+  if(p.maxlaps == 2147483647)
+    p.maxlaps = null;
+  pointer += 4;
   p.lapdist = msg.readDoubleLE(pointer);
   pointer += 8;
   p.numveh = msg.readUInt32LE(pointer);
   pointer += 4;
-  p.gamephase = msg.readUInt8(pointer);
+  p.phase = msg.readUInt8(pointer);
+  switch(p.phase) {
+    case 0: p.phasename = "Starting";
+    break;
+    case 1: p.phasename = "Reconnaissance laps";
+    break;
+    case 2: p.phasename = "Grid";
+    break;
+    case 3: p.phasename = "Formation lap";
+    break;
+    case 4: p.phasename = "Countdown";
+    break;
+    case 5: p.phasename = "Green";
+    break;
+    case 6: p.phasename = "FCY";
+    break;
+    case 7: p.phasename = "Session stopped";
+    break;
+    case 8: p.phasename = "Session over";
+    break;
+    default: p.phasename = "Unknown";
+  }
   p.yellowstate = msg.readUInt8(++pointer);
+  switch(p.yellowstate) {
+    case 0: p.yellowname = "None";
+    break;
+    case 1: p.yellowname = "Pending";
+    break;
+    case 2: p.yellowname = "Pits closed";
+    break;
+    case 3: p.yellowname = "Pit lead lap";
+    break;
+    case 4: p.yellowname = "Pits open";
+    break;
+    case 5: p.yellowname = "Last lap";
+    break;
+    case 6: p.yellowname = "Resume";
+    break;
+    case 7: p.yellowname = "Race halt";
+    break;
+    case -1: p.yellowname = "Invalid";
+    break;
+    default: p.yellowname = "Unknown";
+  }
   p.sectorflag = [msg.readUInt8(++pointer), msg.readUInt8(++pointer), msg.readUInt8(++pointer)];
   p.startlight = msg.readUInt8(++pointer);
   p.numredlights = msg.readUInt8(++pointer);

@@ -42,10 +42,12 @@ function saveMap() {
 }
 
 function start(track) {
-  currtrack = track;
-  map = loadMap(track);
-  bestpaths = [];
-  currpaths = new Object();
+  if(currtrack != track || !exists) {
+    currtrack = track;
+    map = loadMap(track);
+    bestpaths = [];
+    currpaths = new Object();
+  }
   return exists;
 }
 
