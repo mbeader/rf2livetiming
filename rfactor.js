@@ -157,10 +157,13 @@ function parseScoringPacket(msg, p)  {
     pointer += 2;
     veh.numpenalties = msg.readUInt16LE(pointer);
     pointer += 2;
+    if(msg.readUInt8(pointer++) == 1)
+      veh.isAI = true;
+    else
+      veh.isAI = false;
     veh.inpit = msg.readUInt8(pointer++);
     veh.sector = msg.readUInt8(pointer++);
     veh.status = msg.readUInt8(pointer++);
-    //console.log(veh.drivername + ' ' + veh.vehclass + '\t' + veh.speed);
     p.veh.push(veh);
   }
   pointer += 4;
@@ -206,6 +209,7 @@ function getDriversMap(veh) {
     vehicle.name = veh[i].vehname;
     vehicle.vehclass = veh[i].vehclass;
     vehicle.place = veh[i].place
+    vehicle.ai =  veh[i].isAI;
     drivers[veh[i].drivername] = vehicle;
   }
   return drivers;

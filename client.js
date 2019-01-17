@@ -87,6 +87,7 @@ function hotlaps2List(data) {
         t.vehclass = vehclass;
         t.veh = veh;
         t.bestlap = data[name][vehclass][veh].lap;
+        t.ai = data[name][vehclass][veh].ai;
         list.push(t);
       });
     });
@@ -102,6 +103,7 @@ function drivers2List(data) {
     t.vehclass = data[name].vehclass;
     t.veh = data[name].name;
     t.place = data[name].place;
+    t.ai = data[name].ai;
     list.push(t);
   });
   list.sort(compareDrivers);
@@ -181,6 +183,8 @@ function createHotlapsElement(lap) {
     t += '<td class="time">' + lap.bestlap.s3.toFixed(3) + '</td>';
   t += '<td class="time">' + lap.bestlap.t.toFixed(3) + '</td>';
   e.innerHTML = t;
+  if(lap.ai)
+    e.setAttribute('ai', 'true');
   return e;
 }
 
@@ -208,10 +212,12 @@ function buildHotlapsTable(laps) {
 function buildLiveTable(drivers) {
   let t = '';
   for(let i = 0; i < drivers.length; i++) {
+    t += '<tr';
     if(i % 2 != 0)
-      t += '<tr class="even">';
-    else
-      t += '<tr>';
+      t += ' class="even"';
+    if(drivers[i].ai)
+      t += ' ai="true"';
+    t += '>';
     t += '<td>' + (i + 1) + '</td>';
     t += '<td>' + drivers[i].name + '</td>';
     t += '<td>' + drivers[i].veh + '</td>';

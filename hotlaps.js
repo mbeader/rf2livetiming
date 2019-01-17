@@ -79,6 +79,7 @@ function updateDB(lap, name, veh) {
     n.sectors.s1 = lap.s1;
     n.sectors.s2 = lap.s2;
     n.sectors.s3 = lap.s3;
+    n.ai = veh.ai;
     c[veh.name] = n;
     db.data[name][veh.vehclass] = c;
     dirty = true;
@@ -90,6 +91,7 @@ function updateDB(lap, name, veh) {
     n.sectors.s1 = lap.s1;
     n.sectors.s2 = lap.s2;
     n.sectors.s3 = lap.s3;
+    n.ai = veh.ai;
     c[veh.name] = n;
     db.data[name][veh.vehclass] = c;
     dirty = true;
@@ -100,6 +102,7 @@ function updateDB(lap, name, veh) {
     n.sectors.s1 = lap.s1;
     n.sectors.s2 = lap.s2;
     n.sectors.s3 = lap.s3;
+    n.ai = veh.ai;
     db.data[name][veh.vehclass][veh.name] = n;
     dirty = true;
   } else {
@@ -130,6 +133,7 @@ function updateDB(lap, name, veh) {
     res.veh = veh.name;
     res.vehclass = veh.vehclass;
     res.bestlap = lap;
+    res.ai = veh.ai;
     return res;
   }
 }

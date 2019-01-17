@@ -149,3 +149,7 @@ a:hover {
   background-color: #1d1f21;
   color: #c5c8c6;
 }
+
+tr[ai="true"] {
+  color: #969896;
+}
