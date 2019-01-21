@@ -71,7 +71,7 @@ function initLoad(e) {
     if(typeof res.info.drivers !== "undefined" && res.info.drivers !== null) {
       buildLiveTable(drivers2List(res.info.drivers));
     } else
-      document.getElementById('live').style['display'] = 'none';
+      ;//document.getElementById('live').style['display'] = 'none';
   });
   req.open('GET', '/init');
   req.send();
@@ -116,7 +116,7 @@ function updateDrivers(drivers) {
     document.getElementById('live').style['display'] = '';
   } else {
     document.getElementById('live').getElementsByTagName('tbody')[0].innerHTML = '';
-    document.getElementById('live').style['display'] = 'none';
+    //document.getElementById('live').style['display'] = 'none';
   }
 }  
 

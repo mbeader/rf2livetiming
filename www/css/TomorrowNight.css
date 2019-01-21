@@ -26,12 +26,40 @@ body {
   text-align: center;
 }
 
-.table-wrapper {
+#left-column {
+  float: left;
+}
+
+#right-column {
+  float: right;
+}
+
+.column-wrapper {
   display: inline-block;
   text-align: left;
-  margin: auto 10px;
   vertical-align: top;
+  width: 49.5%;
 }
+
+#hotlaps, #live {
+  table-layout: fixed;
+}
+
+#hotlaps td:nth-child(3), #live td:nth-child(3) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#hotlaps th:nth-child(1) {width: 2.5%;}
+#hotlaps th:nth-child(3) {width: 30%;}
+#hotlaps th:nth-child(5) {width: 5%;}
+#hotlaps th:nth-child(6) {width: 5%;}
+#hotlaps th:nth-child(7) {width: 5%;}
+#hotlaps th:nth-child(8) {width: 7%;}
+
+
+#live th:nth-child(1) {width: 2.5%;}
 
 table {
   width: 100%;
@@ -168,4 +196,8 @@ a:hover {
 
 tr[ai="true"] {
   color: #969896;
+}
+
+#map {
+  width: 50%;
 }

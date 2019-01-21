@@ -28,38 +28,43 @@
       </div>
     </section>
     <div class="main-wrapper">
-    <div id="hotlaps-wrapper" class="table-wrapper">
-    <table id="hotlaps">
-      <caption>Best Laps</caption>
-      <thead>
-        <tr>
-          <th>Pos</th>
-          <th>Driver</th>
-          <th>Vehicle</th>
-          <th>Class</th>
-          <th>S1</th>
-          <th>S2</th>
-          <th>S3</th>
-          <th>Best Lap</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    </div>
-    <div id="live-wrapper" class="table-wrapper">
-    <table id="live">
-      <caption>Live Timing</caption>
-      <thead>
-        <tr>
-          <th>Pos</th>
-          <th>Driver</th>
-          <th>Vehicle</th>
-          <th>Class</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    </div>
+      <div id="left-column" class="column-wrapper">
+        <canvas id="map" width="1000" height="1000"></canvas>
+        <div id="hotlaps-wrapper" class="table-wrapper">
+        <table id="hotlaps">
+          <caption>Best Laps</caption>
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Driver</th>
+              <th>Vehicle</th>
+              <th>Class</th>
+              <th>S1</th>
+              <th>S2</th>
+              <th>S3</th>
+              <th>Best Lap</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        </div>
+      </div>
+      <div id="right-column" class="column-wrapper">
+        <div id="live-wrapper" class="table-wrapper">
+        <table id="live">
+          <caption>Live Timing</caption>
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Driver</th>
+              <th>Vehicle</th>
+              <th>Class</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        </div>
+      </div>
     </div>
   </main>
 </body>
