@@ -64,7 +64,7 @@ function handler (req, res) {
       });
     break;
     case '/TomorrowNight.css':
-      fs.readFile(path.join('css', uri.pathname), function(error, content) {
+      fs.readFile(path.join('www', 'css', uri.pathname), function(error, content) {
         res.writeHead(200, {'Content-type': 'text/css'});
         res.end(content, 'utf-8');
       });

@@ -120,20 +120,36 @@ a:hover {
 }
 
 #info > div {
-  text-align: center;
+  /*text-align: center;*/
   font-size: 16px;
 }
 
-#join {
-  float:left;
+#session-bar {
+  display: flex;
 }
 
-#remaining {
-  float:right;
+.box:first-child > a {
+  margin-right: auto;
+}
+
+.box:last-child > span {
+  margin-left: auto;
+}
+
+.box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 #sectors:before {
-  content: " —";
+  content: "—";
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sectors span:first-child:before {
+  content: "";
 }
 
 #sectors span:before {
