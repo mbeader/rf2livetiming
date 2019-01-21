@@ -1,6 +1,6 @@
 # rf2livetiming
-config.js
-classes.js
+config/*
+!config/examples/
 state.json
 hotlaps/
 maps/

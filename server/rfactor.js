@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('../config');
 
 function parseUDPPacket(msg)  {
   let p = new Object();

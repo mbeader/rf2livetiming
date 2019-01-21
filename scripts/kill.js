@@ -1,5 +1,5 @@
 const fs   = require('fs');
-const config = require('./config');
+const config = require('../config');
 const io = require('socket.io-client');
 const url = 'http://localhost:' + config.HTTP_LISTEN_PORT;
 socket = io(url, { timeout: 2000 });

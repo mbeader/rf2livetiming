@@ -5,11 +5,11 @@ const dgram = require('dgram');
 const fs   = require('fs');
 const path = require('path');
 const url  = require('url');
-const config = require('./config');
+const config = require('../config');
 const rfactor = require('./rfactor');
 const hotlaps = require('./hotlaps');
 const mapbuilder = require('./mapbuilder');
-const classcolors = require('./classes');
+const classcolors = require('../config/classes');
 
 var state = new Object();
 state.track = '';
@@ -35,7 +35,7 @@ function handler (req, res) {
   switch(uri.pathname) {
     case '/':
     case '/index.html':
-      fs.readFile('index.html', function(error, content) {
+      fs.readFile(path.join('www', 'index.html'), function(error, content) {
         res.writeHead(200, {'Content-type': 'text/html'});
         res.end(content, 'utf-8');
       });
@@ -46,13 +46,9 @@ function handler (req, res) {
       content.title = config.BASE_TITLE;
       content.heading = config.PAGE_HEADING;
       content.link = config.JOIN_LINK;
-      if(state.track == '') {
-        let temp = new Object();
-        temp.track = hotlaps.getTrack();
-        temp.session = '';
-        content.info = temp;
-      } else
-        content.info = state;
+      content.info = state;
+      if(state.track == '')
+        content.info.track = hotlaps.getTrack();
       content.data = hotlaps.getData();
       res.end(JSON.stringify(content), 'utf-8');
       break;
@@ -62,21 +58,14 @@ function handler (req, res) {
       res.end(cntnt, 'utf-8');
     case '/client.js':
     case '/map.js':
-      fs.readFile(path.join('.', uri.pathname), function(error, content) {
+      fs.readFile(path.join('client', uri.pathname), function(error, content) {
         res.writeHead(200, {'Content-type': 'application/javascript'});
         res.end(content, 'utf-8');
       });
     break;
     case '/TomorrowNight.css':
-    case '/FourLeaves.css':
       fs.readFile(path.join('css', uri.pathname), function(error, content) {
         res.writeHead(200, {'Content-type': 'text/css'});
-        res.end(content, 'utf-8');
-      });
-      break;
-    case '/' + config.PAGE_BANNER:
-      fs.readFile(config.PAGE_BANNER, function(error, content) {
-        res.writeHead(200, {'Content-type': 'image/jpg'});
         res.end(content, 'utf-8');
       });
       break;

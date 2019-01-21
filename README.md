@@ -11,7 +11,7 @@ Serves best laps and current drivers to client and updates in real time using so
 * Configure rf2livetiming.ini
 * Install node and npm
 * Run `npm install`
-* Configure config.js
+* Configure files in `config/`
 * Run `npm start` or run `npm test` to run directly in cmd
 * Start the rF2 dedicated server
 * To shut down the node server run `npm stop`
@@ -26,7 +26,6 @@ Serves best laps and current drivers to client and updates in real time using so
 * Main page with map, live timing, best laps and chat
 * Separate pages for live timing, map, best laps
 * Rethink use of objects
-* Identify drivers as AI
 * View hotlap db for other tracks not currently on server
 * View race results files
 * Driver ranking
