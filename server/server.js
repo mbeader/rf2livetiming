@@ -79,7 +79,10 @@ io.on('connection', function (socket) {
   if(socket.handshake.address == config.IPV4_LOOPBACK || socket.handshake.address == '::ffff:' + config.IPV4_LOOPBACK || socket.handshake.address == '::1') {
     socket.on('kill', function () {
       console.log('Terminating');
-      process.exit(0);
+      userver.close();
+      setTimeout(() => {
+        process.exit(0);
+      }, 8000);
     });
   }
 });
