@@ -56,11 +56,18 @@ function handler (req, res) {
       res.writeHead(200, {'Content-type': 'text/html'});
       let cntnt = '<html><head><script type ="application/javascript" src="/socket.io/socket.io.js"></script><script type ="application/javascript" src="map.js"></script></head><body><canvas id="map" width="1000" height="1000"></canvas></body></html>'
       res.end(cntnt, 'utf-8');
-    case '/client.js':
+    case '/home.js':
+      fs.readFile(path.join('client', 'client.js'), function(error, content) {
+        fs.readFile(path.join('client', 'map.js'), function(error, content2) {
+          res.writeHead(200, {'Content-type': 'application/javascript'});
+          res.end("var socket = io('/');\n" + content + content2, 'utf-8');
+        });
+      });
+    break;
     case '/map.js':
       fs.readFile(path.join('client', uri.pathname), function(error, content) {
         res.writeHead(200, {'Content-type': 'application/javascript'});
-        res.end(content, 'utf-8');
+        res.end("var socket = io('/');\n" + content, 'utf-8');
       });
     break;
     case '/TomorrowNight.css':
@@ -85,12 +92,21 @@ io.on('connection', function (socket) {
       }, 8000);
     });
   }
+  
+  socket.on('join', function (room) {
+    socket.join(room);
+    if(room == 'map') {
+      socket.emit('classes', classcolors);
+      if(exists)
+        socket.emit('map', mapbuilder.getTrackMap());
+    }
+  });
 });
 
 mapnamespace.on('connection', function (socket) {
-  mapnamespace.emit('classes', classcolors);
+  socket.emit('classes', classcolors);
   if(exists)
-    mapnamespace.emit('map', mapbuilder.getTrackMap());
+    socket.emit('map', mapbuilder.getTrackMap());
 });
 
 const userver = dgram.createSocket('udp4');
@@ -119,7 +135,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.name = packet.phasename;
     state.phase.yellow = packet.yellowname;
     state.phase.sectors = packet.sectorflag;
-    io.emit('session', state);
+    io.to('live').emit('session', state);
     exists = mapbuilder.start(packet.trackname);
     hotlaps.onUpdate(packet.trackname, packet.sessionname, null, [])
   } else {
@@ -128,28 +144,28 @@ userver.on('message', (msg, rinfo) => {
       state.phase.name = packet.phasename;
       state.phase.yellow = packet.yellowname;
       state.phase.sectors = packet.sectorflag;
-      io.emit('phase', state.phase);
+      io.to('live').emit('phase', state.phase);
     }
   }
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
-    mapnamespace.emit('veh', rfactor.getVehPos(packet.veh));
+    io.to('map').emit('veh', rfactor.getVehPos(packet.veh));
     let temp = exists;
     if(!exists)
       exists = mapbuilder.onUpdate(packet.veh);
     if(temp !== exists)
-      mapnamespace.emit('map', mapbuilder.getTrackMap());
+      io.to('map').emit('map', mapbuilder.getTrackMap());
     if(typeof state.drivers !== "undefined") {
       if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
-        io.emit('drivers', drivers);
+        io.to('live').emit('drivers', drivers);
         state.drivers = drivers;
       }
     } else {
-      io.emit('drivers', drivers);
+      io.to('live').emit('drivers', drivers);
       state.drivers = drivers;
     }
   } else if(typeof state.drivers !== "undefined") {
-    io.emit('drivers', drivers);
+    io.to('live').emit('drivers', drivers);
     state.drivers = drivers;
   }
   let result = rfactor.parseResultStream(packet.results);
@@ -160,7 +176,7 @@ userver.on('message', (msg, rinfo) => {
   else {
     let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, result);
     if(typeof updates !== "undefined") {
-      io.emit('hotlap', updates);
+      io.to('hotlaps').emit('hotlap', updates);
     }
   }
   timer = setTimeout(function() {
@@ -176,7 +192,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.name = '';
     state.phase.yellow = '';
     state.phase.sectors = [0,0,0];
-    io.emit('session', state);
+    io.to('live').emit('session', state);
   }, 5000);
 });
 

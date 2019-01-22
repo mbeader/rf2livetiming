@@ -1,10 +1,13 @@
-var socket = io('/');
+//var socket = io('/');
 var hltable;
 var classbests = new Object();
 var newupdates = [];
 var rtime;
 var timelastset;
 var rtimeinterval;
+
+socket.emit('join', 'hotlaps');
+socket.emit('join', 'live');
 
 socket.on('session', function (state) {
   if(state.session == '') {

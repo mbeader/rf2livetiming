@@ -1,12 +1,14 @@
-var socket = io('/map');
+//var socket = io('/map');
 var canvas;
 var context;
 var track;
 var dy, dx, cy = 0, cx = 0;
-var dim;
+var dim, scalefactor = 1;
 var classcolors;
 var colors = ['red', 'blue', 'lime', 'yellow', 'magenta', 'aqua', 'orange', 'white', 'gray', 'silver'];
 var edges = {maxx: Number.MIN_SAFE_INTEGER, minx: Number.MAX_SAFE_INTEGER, maxy: Number.MIN_SAFE_INTEGER, miny: Number.MAX_SAFE_INTEGER};
+
+socket.emit('join', 'map');
 
 socket.on('veh', function (veh) {
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -78,6 +80,7 @@ socket.on('map', function (map) {
   dy = track.maxy - track.miny;
   cx = (track.maxx + track.minx)/2;
   cy = (track.maxy + track.miny)/2;
+  calcScaleFactor();
 });
 
 socket.on('classes', function (colors) {
@@ -87,11 +90,12 @@ socket.on('classes', function (colors) {
     classcolors = colors;
 });
 
-document.addEventListener('DOMContentLoaded', initLoad, false);
-function initLoad(e) {
+document.addEventListener('DOMContentLoaded', initMapLoad, false);
+function initMapLoad(e) {
   canvas = document.getElementById('map');
   context = canvas.getContext('2d');
   dim = canvas.width/2;
+  canvas.style.width = document.getElementById('map-wrapper').offsetWidth + 'px';
 }
 
 function drawSector(sector, end, color) {
@@ -111,4 +115,11 @@ function drawSectorMarker(prev, center, next) {
   context.translate(-1*(center.x+dim-cx), -1*(dim-center.y+cy));
   context.fillRect(center.x+dim-cx-3, dim-center.y+cy-15, 6, 30);
   context.restore();
+}
+
+function calcScaleFactor() {
+  if(dx > dy)
+    scalefactor = (canvas.width*.8)/dx;
+  else
+    scalefactor = (canvas.height*.8)/dy;
 }
