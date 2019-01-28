@@ -168,17 +168,19 @@ userver.on('message', (msg, rinfo) => {
     io.to('live').emit('drivers', drivers);
     state.drivers = drivers;
   }
-  let result = rfactor.parseResultStream(packet.results);
-  if(typeof result === "undefined")
+  let events = rfactor.parseEventStream(packet.results);
+  if(typeof events === "undefined")
     console.log('udef');
-  if(typeof result[0] === "undefined")
+  if(typeof events.score[0] === "undefined")
     ;
   else {
-    let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, result);
+    let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, events.score);
     if(typeof updates !== "undefined") {
       io.to('hotlaps').emit('hotlap', updates);
     }
   }
+  if(events.chat.length > 0)
+    io.to('chat').emit('message', events.chat);
   timer = setTimeout(function() {
     console.log('rF2 server offline');
     state = new Object();

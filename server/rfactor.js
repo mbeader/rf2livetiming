@@ -1,4 +1,6 @@
 const config = require('../config');
+var xmlescapes = ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;']
+var xmlchars = ['&', '<', '>', '"', '\''];
 
 function parseUDPPacket(msg)  {
   let p = new Object();
@@ -171,17 +173,20 @@ function parseScoringPacket(msg, p)  {
   return p;
 }
 
-function parseResultStream(res) {
+function parseEventStream(res) {
   let rawevents = res.split('\n');
-  let events = [];
+  let events = {score: [], chat: []};
+  // Score, Incident, Chat, Sector
   for(let i = 0; i < rawevents.length; i++) {
     if(rawevents[i].startsWith('<Score'))
-      events.push(xml2Obj(rawevents[i].split('>')[1].split('</Score')[0]));
+      events.score.push(score2Obj(rawevents[i].split('>')[1].split('</Score')[0]));
+    else if(rawevents[i].startsWith('<Chat'))
+      events.chat.push(chat2Obj(rawevents[i].split('>')[1].split('</Chat')[0]));
   }
   return events;
 }
 
-function xml2Obj(xml) {
+function score2Obj(xml) {
   let e = new Object();
   if(xml.startsWith('Checkered')) {
   } else {
@@ -198,6 +203,18 @@ function xml2Obj(xml) {
     e.et = Number.parseFloat(data[14]);
   }
   return e;
+}
+
+function chat2Obj(xml) {
+  let e = new Object();
+  for(let i = 0; i < xmlescapes.length; i++)
+    xml = xml.replace(new RegExp(xmlescapes[i], 'gi'), xmlchars[i]);
+  /*if(xml.charAt(0) == '>')
+    e.name = 'Server';
+  else
+    e.name = xml.substring(0, xml.indexOf(': '));
+  e.message = xml.substring(xml.indexOf(': ')+3);*/
+  return xml;
 }
 
 function getDriversMap(veh) {
@@ -244,7 +261,7 @@ function getVehPos(veh) {
 
 module.exports = {
   parseUDPPacket: parseUDPPacket,
-  parseResultStream: parseResultStream,
+  parseEventStream: parseEventStream,
   getDriversMap: getDriversMap,
   compareDriversMaps: compareDriversMaps,
   getVehPos: getVehPos

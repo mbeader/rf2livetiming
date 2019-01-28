@@ -198,3 +198,19 @@ tr[ai="true"] {
   color: #969896;
 }
 
+#messages {
+  /*background-color: #282a2e;*/
+  border: 1px solid #282a2e;
+}
+
+#messages p {
+  margin: 2px auto;
+  padding-left: 4px;
+}
+
+.label {
+  padding-left: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}

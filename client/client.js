@@ -8,6 +8,7 @@ var rtimeinterval;
 
 socket.emit('join', 'hotlaps');
 socket.emit('join', 'live');
+socket.emit('join', 'chat');
 
 socket.on('session', function (state) {
   if(state.session == '') {
@@ -51,6 +52,15 @@ socket.on('drivers', function (drivers) {
 socket.on('refresh', function () {
   console.log('GOT');
   location.reload(true);
+});
+
+socket.on('message', function (messages) {
+  for(let i = 0; i < messages.length; i++) {
+    let e = document.createElement('p');
+    console.log(messages[i]);
+    e.textContent = messages[i];
+    document.getElementById('messages').appendChild(e);
+  }
 });
 
 document.addEventListener('DOMContentLoaded', initLoad, false);
