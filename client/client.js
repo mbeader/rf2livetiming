@@ -5,6 +5,7 @@ var newupdates = [];
 var rtime;
 var timelastset;
 var rtimeinterval;
+var chatatbottom = true;
 
 socket.emit('join', 'hotlaps');
 socket.emit('join', 'live');
@@ -55,11 +56,16 @@ socket.on('refresh', function () {
 });
 
 socket.on('message', function (messages) {
+  let m = document.getElementById('messages');
+  chatatbottom = m.scrollHeight - m.clientHeight <= m.scrollTop + 1
   for(let i = 0; i < messages.length; i++) {
     let e = document.createElement('p');
     console.log(messages[i]);
     e.textContent = messages[i];
-    document.getElementById('messages').appendChild(e);
+    m.appendChild(e);
+  }
+  if(chatatbottom) {
+    m.scrollTop = m.scrollHeight - m.clientHeight
   }
 });
 

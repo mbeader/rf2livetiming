@@ -64,7 +64,6 @@ body {
 table {
   width: 100%;
   border: 1px solid #282a2e;
-  margin-bottom: 15px;
 }
 
 table caption {
@@ -201,6 +200,8 @@ tr[ai="true"] {
 #messages {
   /*background-color: #282a2e;*/
   border: 1px solid #282a2e;
+  height: 10em;
+  overflow: auto;
 }
 
 #messages p {
@@ -212,5 +213,14 @@ tr[ai="true"] {
   padding-left: 4px;
   font-size: 16px;
   font-weight: bold;
+  margin-top: 0px;
   margin-bottom: 4px;
+}
+
+#map {
+  border: 1px solid #282a2e;
+}
+
+#map-wrapper, #live-wrapper {
+  margin-bottom: 15px;
 }
