@@ -136,7 +136,10 @@ userver.on('message', (msg, rinfo) => {
     state.phase.yellow = packet.yellowname;
     state.phase.sectors = packet.sectorflag;
     io.to('live').emit('session', state);
+    io.to('map').emit('clear');
     exists = mapbuilder.start(packet.trackname);
+    if(exists)
+      io.to('map').emit('map', mapbuilder.getTrackMap());
     hotlaps.onUpdate(packet.trackname, packet.sessionname, null, [])
   } else {
     state.currtime = packet.currtime;

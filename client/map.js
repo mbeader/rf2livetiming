@@ -12,17 +12,7 @@ socket.emit('join', 'map');
 
 socket.on('veh', function (veh) {
   context.clearRect(0, 0, canvas.width, canvas.height);
-  if(typeof track !== "undefined") {
-    context.lineWidth = 15;
-    drawSector(track.s1, track.s2[0], 'navy');
-    drawSector(track.s2, track.s3[0], 'green');
-    drawSector(track.s3, track.s1[0], 'maroon');
-    
-    context.fillStyle = 'gray';
-    drawSectorMarker(track.s3[track.s3.length-1], track.s1[0], track.s1[1]);
-    drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1]);
-    drawSectorMarker(track.s2[track.s2.length-1], track.s3[0], track.s3[1]);
-  }
+  drawTrack();
 
   let fillcolor, textcolor;
   let changed = false;
@@ -81,6 +71,12 @@ socket.on('map', function (map) {
   cx = (track.maxx + track.minx)/2;
   cy = (track.maxy + track.miny)/2;
   calcScaleFactor();
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
+});
+
+socket.on('clear', function () {
+  context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
 socket.on('classes', function (colors) {
@@ -96,6 +92,20 @@ function initMapLoad(e) {
   context = canvas.getContext('2d');
   dim = canvas.width/2;
   canvas.style.width = document.getElementById('map-wrapper').offsetWidth + 'px';
+}
+
+function drawTrack() {
+  if(typeof track !== "undefined") {
+    context.lineWidth = 15;
+    drawSector(track.s1, track.s2[0], 'navy');
+    drawSector(track.s2, track.s3[0], 'green');
+    drawSector(track.s3, track.s1[0], 'maroon');
+    
+    context.fillStyle = 'gray';
+    drawSectorMarker(track.s3[track.s3.length-1], track.s1[0], track.s1[1]);
+    drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1]);
+    drawSectorMarker(track.s2[track.s2.length-1], track.s3[0], track.s3[1]);
+  }
 }
 
 function drawSector(sector, end, color) {
