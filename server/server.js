@@ -58,10 +58,12 @@ function handler (req, res) {
       let cntnt = '<html><head><script type ="application/javascript" src="/socket.io/socket.io.js"></script><script type ="application/javascript" src="map.js"></script></head><body><canvas id="map" width="1000" height="1000"></canvas></body></html>'
       res.end(cntnt, 'utf-8');
     case '/home.js':
-      fs.readFile(path.join('client', 'client.js'), function(error, content) {
-        fs.readFile(path.join('client', 'map.js'), function(error, content2) {
-          res.writeHead(200, {'Content-type': 'application/javascript'});
-          res.end("var socket = io('/');\n" + content + content2, 'utf-8');
+      fs.readFile(path.join('client', 'home.js'), function(error, content) {
+        fs.readFile(path.join('client', 'session.js'), function(error, content2) {
+          fs.readFile(path.join('client', 'map.js'), function(error, content3) {
+            res.writeHead(200, {'Content-type': 'application/javascript'});
+            res.end("var socket = io('/');\n" + content + content2 + content3, 'utf-8');
+          });
         });
       });
     break;
