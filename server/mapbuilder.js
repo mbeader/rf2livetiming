@@ -53,7 +53,9 @@ function start(track) {
 
 function onUpdate(veh) {
   for(let i = 0; i < veh.length; i++) {
-    if(typeof currpaths[veh[i].drivername] === "undefined") {
+    if(veh[i].laps == 0)
+      ;
+    else if(typeof currpaths[veh[i].drivername] === "undefined") {
       currpaths[veh[i].drivername] = createPath(veh[i].laps, veh[i].posx, veh[i].posy);
     } else if(currpaths[veh[i].drivername].lap == veh[i].laps) {
       if(veh[i].sector == 1)
