@@ -3,6 +3,7 @@ const path   = require('path');
 
 createConfig();
 createClassColorsConfig();
+fs.mkdirSync('data');
 
 function createConfig() {
   let example;

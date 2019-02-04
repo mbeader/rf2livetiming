@@ -11,7 +11,7 @@ var currtrack;
 function loadMap(track) {
   let temp;
   try {
-    temp = JSON.parse(fs.readFileSync(path.normalize('maps/' + track + '.json')));
+    temp = JSON.parse(fs.readFileSync(path.normalize('data/maps/' + track + '.json')));
     if(typeof temp.version === "undefined")
       throw new Error('Bad map for ' + track);
     else if(temp.version == 1) {
@@ -36,7 +36,7 @@ function loadMap(track) {
 }
 
 function saveMap() {
-  fs.writeFile(path.normalize('maps/' + currtrack + '.json'), JSON.stringify(map), (err) => {
+  fs.writeFile(path.normalize('data/maps/' + currtrack + '.json'), JSON.stringify(map), (err) => {
     if (err) throw err;
   });
 }

@@ -8,7 +8,7 @@ var pendinglaps = new Object();
 var state = new Object();
 
 try {
-  state = JSON.parse(fs.readFileSync('state.json'));
+  state = JSON.parse(fs.readFileSync(path.join('data', 'state.json')));
 } catch(err) {
   if (err.code === 'ENOENT') {
     console.log('No hotlaps state found');
@@ -37,7 +37,7 @@ function onUpdate(track, session, drivers, events) {
     state.lasttrack = track;
     state.lastsession = session;
     pendinglaps = new Object();
-    fs.writeFile('state.json', JSON.stringify(state), (err) => {
+    fs.writeFile(path.join('data', 'state.json'), JSON.stringify(state), (err) => {
       if (err) throw err;
     });
   }
@@ -139,7 +139,7 @@ function updateDB(lap, name, veh) {
 }
 
 function saveDB() {
-  fs.writeFile(path.normalize('hotlaps/' + state.lasttrack + '.json'), JSON.stringify(db), (err) => {
+  fs.writeFile(path.normalize('data/hotlaps/' + state.lasttrack + '.json'), JSON.stringify(db), (err) => {
     if (err) throw err;
   });
 }
@@ -147,7 +147,7 @@ function saveDB() {
 function loadDB(track) {
   let temp;
   try {
-    temp = JSON.parse(fs.readFileSync(path.normalize('hotlaps/' + track + '.json')));
+    temp = JSON.parse(fs.readFileSync(path.normalize('data/hotlaps/' + track + '.json')));
     if(typeof temp.version === "undefined")
       throw new Error('Bad db for ' + track);
     else if(temp.version == 1)
