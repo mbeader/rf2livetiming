@@ -47,6 +47,7 @@ function handler (req, res) {
       content.heading = config.PAGE_HEADING;
       content.link = config.JOIN_LINK;
       content.info = state;
+      delete content.info.drivers;
       if(state.track == '')
         content.info.track = hotlaps.getTrack();
       content.data = hotlaps.getData();
@@ -153,6 +154,7 @@ userver.on('message', (msg, rinfo) => {
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
     io.to('map').emit('veh', rfactor.getVehPos(packet.veh));
+    io.to('live').emit('vehs', packet.veh);
     let temp = exists;
     if(!exists)
       exists = mapbuilder.onUpdate(packet.veh);
@@ -160,15 +162,13 @@ userver.on('message', (msg, rinfo) => {
       io.to('map').emit('map', mapbuilder.getTrackMap());
     if(typeof state.drivers !== "undefined") {
       if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
-        io.to('live').emit('drivers', drivers);
         state.drivers = drivers;
       }
     } else {
-      io.to('live').emit('drivers', drivers);
       state.drivers = drivers;
     }
   } else if(typeof state.drivers !== "undefined") {
-    io.to('live').emit('drivers', drivers);
+    io.to('live').emit('vehs', packet.veh);
     state.drivers = drivers;
   }
   let events = rfactor.parseEventStream(packet.results);

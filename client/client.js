@@ -1,5 +1,6 @@
 //var socket = io('/');
 var hltable;
+var livetable;
 var classbests = new Object();
 var newupdates = [];
 var rtime;
@@ -15,7 +16,6 @@ socket.on('session', function (state) {
   if(state.session == '') {
     document.getElementById('session').textContent = state.track;
     updatePhase(null);
-    updateDrivers(state.drivers);
   } else {
     document.getElementById('session').textContent = state.session + ' @ ' + state.track;
     updatePhase(state.phase);
@@ -46,12 +46,12 @@ socket.on('hotlap', function (laps) {
   newupdates = [];
 });
 
-socket.on('drivers', function (drivers) {
-  updateDrivers(drivers);
+socket.on('vehs', function (vehs) {
+  updateLiveTable(vehs);
+  sortLiveTable();
 });
 
 socket.on('refresh', function () {
-  console.log('GOT');
   location.reload(true);
 });
 
@@ -60,7 +60,6 @@ socket.on('message', function (messages) {
   chatatbottom = m.scrollHeight - m.clientHeight <= m.scrollTop + 1
   for(let i = 0; i < messages.length; i++) {
     let e = document.createElement('p');
-    console.log(messages[i]);
     e.textContent = messages[i];
     m.appendChild(e);
   }
@@ -86,11 +85,8 @@ function initLoad(e) {
     }
     setRemainingTime(res.info.currtime, res.info.endtime);
     hltable = document.getElementById('hotlaps').getElementsByTagName('tbody')[0];
+    livetable = document.getElementById('live').getElementsByTagName('tbody')[0];
     buildHotlapsTable(hotlaps2List(res.data));
-    if(typeof res.info.drivers !== "undefined" && res.info.drivers !== null) {
-      buildLiveTable(drivers2List(res.info.drivers));
-    } else
-      ;//document.getElementById('live').style['display'] = 'none';
   });
   req.open('GET', '/init');
   req.send();
@@ -114,31 +110,6 @@ function hotlaps2List(data) {
   return list;
 }
 
-function drivers2List(data) {
-  let list = [];
-  Object.keys(data).forEach(function(name, index) {
-    let t = new Object();
-    t.name = name;
-    t.vehclass = data[name].vehclass;
-    t.veh = data[name].name;
-    t.place = data[name].place;
-    t.ai = data[name].ai;
-    list.push(t);
-  });
-  list.sort(compareDrivers);
-  return list;
-}
-
-function updateDrivers(drivers) {
-  if(typeof drivers !== "undefined" && drivers !== null) {
-    buildLiveTable(drivers2List(drivers));
-    document.getElementById('live').style['display'] = '';
-  } else {
-    document.getElementById('live').getElementsByTagName('tbody')[0].innerHTML = '';
-    //document.getElementById('live').style['display'] = 'none';
-  }
-}  
-
 function compareHotlaps(a, b) {
   let at = Number.parseFloat(a.children[7].textContent);
   let bt = Number.parseFloat(b.children[7].textContent);
@@ -149,10 +120,12 @@ function compareHotlaps(a, b) {
   return 0;
 }
 
-function compareDrivers(a, b) {
-  if (a.place < b.place)
+function compareVehs(a, b) {
+  let ap = Number.parseInt(a.children[0].textContent);
+  let bp = Number.parseInt(b.children[0].textContent);
+  if (ap < bp)
     return -1;
-  if (a.place > b.place)
+  if (ap > bp)
     return 1;
   return 0;
 }
@@ -178,6 +151,7 @@ function updateHotlapsTable(laps) {
       hltable.appendChild(temp);
       newupdates.push(temp);
     }
+    found = false;
   }
 }
 
@@ -228,21 +202,128 @@ function buildHotlapsTable(laps) {
   sortHotlapsTable();
 }
 
-function buildLiveTable(drivers) {
-  let t = '';
-  for(let i = 0; i < drivers.length; i++) {
-    t += '<tr';
-    if(i % 2 != 0)
-      t += ' class="even"';
-    if(drivers[i].ai)
-      t += ' ai="true"';
-    t += '>';
-    t += '<td>' + (i + 1) + '</td>';
-    t += '<td>' + drivers[i].name + '</td>';
-    t += '<td>' + drivers[i].veh + '</td>';
-    t += '<td>' + drivers[i].vehclass + '</td></tr>';
+function updateLiveTable(vehs) {
+  let found = false;
+  let oldfound = new Array(livetable.children.length).fill(false);
+  for(let i = 0; i < vehs.length; i++) {
+    for(let j = 0; j < livetable.children.length; j++) {
+      if(livetable.children[j].children[1].textContent == vehs[i].drivername && livetable.children[j].children[3].textContent == vehs[i].vehclass && livetable.children[j].children[2].textContent == vehs[i].vehname) {
+        updateLiveTableElement(livetable.children[j], vehs[i]);
+        found = true;
+        oldfound[j] = true;
+        break;
+      }
+    }
+    if(!found) {
+      let temp = createLiveElement(vehs[i]);
+      livetable.appendChild(temp);
+    }
+    found = false;
   }
-  document.getElementById('live').getElementsByTagName('tbody')[0].innerHTML = t;
+  for(let i = oldfound.length-1; i >= 0; i--) {
+    if(!oldfound[i])
+      livetable.removeChild(livetable.children[i]);
+  }
+}
+
+function updateLiveTableElement(el, veh) {
+  el.children[0].textContent = veh.place;
+  if(veh.timebehindleader != 0)
+    el.children[4].textContent = veh.timebehindleader.toFixed(3);
+  else
+    el.children[4].textContent = '';
+  if(veh.currs1 <= 0 && veh.currs2 <= 0) {
+    if(veh.lasts1 <= 0) {
+      el.children[5].textContent = '';
+      el.children[6].textContent = '';
+      el.children[7].textContent = '';
+    } else if(veh.lasts2 <= 0) {
+      el.children[5].textContent = veh.lasts1.toFixed(3);
+      el.children[6].textContent = '';
+      el.children[7].textContent = '';
+    } else if(veh.lastlap <= 0) {
+      el.children[5].textContent = veh.lasts1.toFixed(3);
+      el.children[6].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
+      el.children[7].textContent = '';
+    } else {
+      el.children[5].textContent = veh.lasts1.toFixed(3);
+      el.children[6].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
+      el.children[7].textContent = (veh.lastlap-veh.lasts2).toFixed(3);
+    }
+  } else {
+    if(veh.currs1 > 0)
+      el.children[5].textContent = veh.currs1.toFixed(3);
+    if(veh.currs2 > 0)
+      el.children[6].textContent = (veh.currs2-veh.lasts1).toFixed(3);
+    else
+      el.children[6].textContent = '';
+    el.children[7].textContent = '';
+  }
+  if(veh.lastlap > 0)
+    el.children[8].textContent = veh.lastlap.toFixed(3);
+  else
+    el.children[8].textContent = '';
+  if(veh.bestlap > 0)
+    el.children[9].textContent = veh.bestlap.toFixed(3);
+  else
+    el.children[9].textContent = '';
+  el.children[10].textContent = veh.laps;
+  let status = '';
+  if(veh.status == 0) {
+    if(veh.inpit)
+      status = 'Pit';
+    else if(veh.sector == 0)
+      status = 'S3';
+    else if(veh.sector == 1)
+      status = 'S1';
+    else if(veh.sector == 2)
+      status = 'S2';
+  } else if(veh.status == 1)
+    status = 'Finish';
+  else if(veh.status == 2)
+    status = 'DNF';
+  else if(veh.status == 3)
+    status = 'DQ';
+  el.children[11].textContent = status;
+}
+
+function createLiveElement(veh) {
+  let e = document.createElement('tr');
+  let t = '';
+  t += '<td>' + veh.place + '</td>';
+  t += '<td>' + veh.drivername + '</td>';
+  t += '<td>' + veh.vehname + '</td>';
+  t += '<td>' + veh.vehclass + '</td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td>' + veh.laps + '</td>';
+  t += '<td></td>';
+  e.innerHTML = t;
+  if(veh.isAI)
+    e.setAttribute('ai', 'true');
+  return e;
+}
+
+function sortLiveTable() {
+  let list = Array.from(livetable.children).sort(compareVehs);
+  for(let i = 0; i < list.length; i++) {
+    if(i % 2 != 0)
+      list[i].classList.add('even');
+    else
+      list[i].classList.remove('even');
+    livetable.appendChild(list[i]);
+  }
+}
+
+function buildLiveTable(vehs) {
+  for(let i = 0; i < vehs.length; i++) {
+    livetable.appendChild(createLiveElement(vehs[i]));
+  }
+  sortHotlapsTable();
 }
 
 function setRemainingTime(currtime, endtime) {
