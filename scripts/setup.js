@@ -3,7 +3,10 @@ const path   = require('path');
 
 createConfig();
 createClassColorsConfig();
-fs.mkdirSync('data');
+fs.mkdir('data', function(err) {
+  if (err instanceof Error && err.code !== "EEXIST")
+    throw err;
+});
 
 function createConfig() {
   let example;
@@ -11,8 +14,8 @@ function createConfig() {
     require.resolve('../config');
   } catch(err) { 
     if (err instanceof Error && err.code === "MODULE_NOT_FOUND") {
-      example = fs.readFileSync(path.join('..', 'config', 'examples', 'index.js.'));
-      fs.writeFileSync(path.join('..', 'config', 'index.js.'), example);
+      example = fs.readFileSync(path.join('config', 'examples', 'index.js'));
+      fs.writeFileSync(path.join('config', 'index.js'), example);
     } else
       throw err;
   }
@@ -24,8 +27,8 @@ function createClassColorsConfig() {
     require.resolve('../config/classes');
   } catch(err) { 
     if (err instanceof Error && err.code === "MODULE_NOT_FOUND") {
-      example = fs.readFileSync(path.join('..', 'config', 'examples', 'classes.js.'));
-      fs.writeFileSync(path.join('..', 'config', 'classes.js'), example);
+      example = fs.readFileSync(path.join('config', 'examples', 'classes.js'));
+      fs.writeFileSync(path.join('config', 'classes.js'), example);
     } else
       throw err;
   }
