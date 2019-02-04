@@ -6,6 +6,7 @@ var newupdates = [];
 var rtime;
 var timelastset;
 var rtimeinterval;
+var maxlaps;
 var chatatbottom = true;
 
 socket.emit('join', 'hotlaps');
@@ -21,6 +22,11 @@ socket.on('session', function (state) {
     updatePhase(state.phase);
   }
   setRemainingTime(state.currtime, state.endtime);
+  if(state.session.startsWith('Race'))
+    maxlaps = state.maxlaps;
+  else
+    maxlaps = null;
+  updateRemainingLaps();
 });
 
 socket.on('phase', function (phase) {
@@ -49,6 +55,10 @@ socket.on('hotlap', function (laps) {
 socket.on('vehs', function (vehs) {
   updateLiveTable(vehs);
   sortLiveTable();
+  if(vehs.length > 0)
+    updateRemainingLaps(Number.parseInt(livetable.firstElementChild.children[10].textContent)+1);
+  else
+    updateRemainingLaps();
 });
 
 socket.on('refresh', function () {
@@ -84,6 +94,10 @@ function initLoad(e) {
       updatePhase(null);
     }
     setRemainingTime(res.info.currtime, res.info.endtime);
+    if(res.info.session.startsWith('Race'))
+      maxlaps = res.info.maxlaps;
+    else
+      maxlaps = null;
     hltable = document.getElementById('hotlaps').getElementsByTagName('tbody')[0];
     livetable = document.getElementById('live').getElementsByTagName('tbody')[0];
     buildHotlapsTable(hotlaps2List(res.data));
@@ -324,6 +338,18 @@ function buildLiveTable(vehs) {
     livetable.appendChild(createLiveElement(vehs[i]));
   }
   sortHotlapsTable();
+}
+
+function updateRemainingLaps(lap) {
+  if(maxlaps !== null) {
+    if(lap > maxlaps)
+      lap = maxlaps;
+    document.getElementById('rlaps').textContent = 'Lap ' + lap + ' of ' + maxlaps;
+    document.getElementById('rtime').className = 'lapset';
+  } else {
+    document.getElementById('rlaps').textContent = '';
+    document.getElementById('rtime').className = '';
+  }
 }
 
 function setRemainingTime(currtime, endtime) {

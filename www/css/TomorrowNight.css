@@ -239,3 +239,11 @@ tr[ai="true"] {
 #map-wrapper, #live-wrapper {
   margin-bottom: 15px;
 }
+
+.lapset:before {
+  content: " (";
+}
+
+.lapset:after {
+  content: ")";
+}
