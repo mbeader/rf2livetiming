@@ -9,6 +9,7 @@ const config = require('../config');
 const rfactor = require('./rfactor');
 const hotlaps = require('./hotlaps');
 const mapbuilder = require('./mapbuilder');
+const Tracker = require('./tracker');
 const classcolors = require('../config/classes');
 
 var state = new Object();
@@ -25,6 +26,7 @@ state.phase.sectors = [0,0,0];
 var timer;
 var mapnamespace = io.of('/map');
 var exists = false;
+var sessionbests = new Tracker();
 
 server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
@@ -138,6 +140,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.name = packet.phasename;
     state.phase.yellow = packet.yellowname;
     state.phase.sectors = packet.sectorflag;
+    sessionbests = new Tracker();
     io.to('live').emit('session', state);
     io.to('map').emit('clear');
     exists = mapbuilder.start(packet.trackname);
@@ -156,6 +159,10 @@ userver.on('message', (msg, rinfo) => {
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
     io.to('map').emit('veh', rfactor.getVehPos(packet.veh));
+    let bests = sessionbests.onUpdate(packet.veh);
+    if(bests != null) {
+      ;
+    }
     io.to('live').emit('vehs', packet.veh);
     let temp = exists;
     if(!exists)
@@ -199,6 +206,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.name = '';
     state.phase.yellow = '';
     state.phase.sectors = [0,0,0];
+    sessionbests = new Tracker();
     io.to('live').emit('session', state);
   }, 5000);
 });

@@ -1,7 +1,7 @@
 //var socket = io('/');
 var hltable;
 var livetable;
-var classbests = new Object();
+var hclassbests = new Object();
 var newupdates = [];
 var lapcolumn = 10;
 var chatatbottom = true;
@@ -14,7 +14,7 @@ socket.on('hotlap', function (laps) {
   updateHotlapsTable(laps);
   sortHotlapsTable();
   for(let i = 0; i < newupdates.length; i++) {
-    if(Number.parseFloat(newupdates[i].children[7].textContent) == classbests[newupdates[i].children[3].textContent]) {
+    if(Number.parseFloat(newupdates[i].children[7].textContent) == hclassbests[newupdates[i].children[3].textContent]) {
       newupdates[i].classList.add('cbest');
       setTimeout(function(e) {
         e.classList.remove('cbest');
@@ -181,8 +181,8 @@ function sortHotlapsTable() {
     else
       list[i].classList.remove('even');
     let c = list[i].children[3].textContent;
-    if(typeof classbests[c] === "undefined" || classbests[c] > Number.parseFloat(list[i].children[7].textContent))
-      classbests[c] = Number.parseFloat(list[i].children[7].textContent);
+    if(typeof hclassbests[c] === "undefined" || hclassbests[c] > Number.parseFloat(list[i].children[7].textContent))
+      hclassbests[c] = Number.parseFloat(list[i].children[7].textContent);
     hltable.appendChild(list[i]);
   }
 }
