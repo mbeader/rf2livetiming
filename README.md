@@ -1,8 +1,9 @@
 # rFactor 2 Live Timing
 
-Receives data from the included rF2 plugin by UDP on loopback.
+Receives data from the included rF2 plugin by UDP, ideally over loopback.
+Serves current session information to client and updates in real time using socket.io. 
 Tracks best sector and lap times by the combination of track, driver name, vehicle name, and vehicle class.
-Serves best laps and current drivers to client and updates in real time using socket.io. 
+Displays a track map, generated via vehicle position over a good, fast lap, with current vehicle locations marked.
 
 ## Setup
 
@@ -18,14 +19,15 @@ Serves best laps and current drivers to client and updates in real time using so
 
 ## Notes
 
-* Currently only tested with 64-bit rFactor 2
+* Only tested with 64-bit rFactor 2
 * rF2 is Windows only, this program is currently Windows only
 
 ## TODO
 
-* Main page with map, live timing, best laps and chat
 * Separate pages for live timing, map, best laps
-* Rethink use of objects
 * View hotlap db for other tracks not currently on server
+* Move from JSON to a database, likely sqlite3
+* Handle multiple servers
+* Rethink use of objects
 * View race results files
 * Driver ranking
