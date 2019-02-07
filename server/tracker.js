@@ -5,6 +5,13 @@ class BestsTracker {
     this.dirty = false;
   }
   
+  get bests() {
+    if(Object.keys(this.vehs).length > 0)
+      return {pb: this.vehs, cb: this.classes};
+    else
+      return null;
+  }
+  
   onUpdate(vehs) {
     this.dirty = false;
     for(let i = 0; i < vehs.length; i++) {

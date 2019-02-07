@@ -2,6 +2,7 @@
 var hltable;
 var livetable;
 var hclassbests = new Object();
+var sessionbests = null;
 var newupdates = [];
 var lapcolumn = 10;
 var chatatbottom = true;
@@ -36,6 +37,10 @@ socket.on('vehs', function (vehs) {
     updateRemainingLaps(Number.parseInt(livetable.firstElementChild.children[lapcolumn].textContent)+1);
   else
     updateRemainingLaps();
+});
+
+socket.on('bests', function (bests) {
+  sessionbests = bests;
 });
 
 socket.on('refresh', function () {
@@ -217,6 +222,49 @@ function updateLiveTable(vehs) {
   }
 }
 
+function highlightBests(el) {
+  if(typeof sessionbests.pb[el.children[1].textContent] !== 'undefined') {
+    if(typeof sessionbests.pb[el.children[1].textContent][el.children[3].textContent] !== 'undefined') {
+      let b = sessionbests.pb[el.children[1].textContent][el.children[3].textContent][el.children[2].textContent];
+      let c = sessionbests.cb[el.children[3].textContent];
+      if(typeof b !== 'undefined') {
+        if(el.children[5].textContent == b.s1.toFixed(3)) {
+          if(el.children[5].textContent == c.s1.toFixed(3))
+            el.children[5].className = 'cbtime';
+          else
+            el.children[5].className = 'pbtime';
+        } else
+          el.children[5].className = '';
+        if(el.children[6].textContent == b.s2.toFixed(3)) {
+          if(el.children[6].textContent == c.s2.toFixed(3))
+            el.children[6].className = 'cbtime';
+          else
+            el.children[6].className = 'pbtime';
+        } else
+          el.children[6].className = '';
+        if(el.children[7].textContent == b.s3.toFixed(3)) {
+          if(el.children[7].textContent == c.s3.toFixed(3))
+            el.children[7].className = 'cbtime';
+          else
+            el.children[7].className = 'pbtime';
+        } else
+          el.children[7].className = '';
+        if(el.children[8].textContent == b.t.toFixed(3)) {
+          if(el.children[8].textContent == c.t.toFixed(3))
+            el.children[8].className = 'cbtime';
+          else
+            el.children[8].className = 'pbtime';
+        } else
+          el.children[8].className = '';
+        if(el.children[9].textContent == c.t.toFixed(3)) {
+          el.children[9].className = 'cbtime';
+        } else
+          el.children[9].className = '';
+      }
+    }
+  }
+}
+
 function updateLiveTableElement(el, veh) {
   el.children[0].textContent = veh.place;
   if(veh.timebehindleader != 0)
@@ -245,7 +293,7 @@ function updateLiveTableElement(el, veh) {
     if(veh.currs1 > 0)
       el.children[5].textContent = veh.currs1.toFixed(3);
     if(veh.currs2 > 0)
-      el.children[6].textContent = (veh.currs2-veh.lasts1).toFixed(3);
+      el.children[6].textContent = (veh.currs2-veh.currs1).toFixed(3);
     else
       el.children[6].textContent = '';
     el.children[7].textContent = '';
@@ -276,6 +324,8 @@ function updateLiveTableElement(el, veh) {
   else if(veh.status == 3)
     status = 'DQ';
   el.children[11].textContent = status;
+  if(sessionbests != null)
+    highlightBests(el);
 }
 
 function createLiveElement(veh) {

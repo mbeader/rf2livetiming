@@ -104,7 +104,8 @@ io.on('connection', function (socket) {
       socket.emit('classes', classcolors);
       if(exists)
         socket.emit('map', mapbuilder.getTrackMap());
-    }
+    } else if(room == 'live')
+      socket.emit('bests', sessionbests.bests);
   });
 });
 
@@ -142,6 +143,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.sectors = packet.sectorflag;
     sessionbests = new Tracker();
     io.to('live').emit('session', state);
+    io.to('live').emit('bests', sessionbests.bests);
     io.to('map').emit('clear');
     exists = mapbuilder.start(packet.trackname);
     if(exists)
@@ -161,7 +163,7 @@ userver.on('message', (msg, rinfo) => {
     io.to('map').emit('veh', rfactor.getVehPos(packet.veh));
     let bests = sessionbests.onUpdate(packet.veh);
     if(bests != null) {
-      ;
+      io.to('live').emit('bests', bests);
     }
     io.to('live').emit('vehs', packet.veh);
     let temp = exists;
@@ -208,6 +210,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.sectors = [0,0,0];
     sessionbests = new Tracker();
     io.to('live').emit('session', state);
+    io.to('live').emit('bests', sessionbests.bests);
   }, 5000);
 });
 

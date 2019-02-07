@@ -247,3 +247,11 @@ tr[ai="true"] {
 .lapset:after {
   content: ")";
 }
+
+.pbtime {
+  color: #b5bd68;
+}
+
+.cbtime {
+  color: #b294bb;
+}
