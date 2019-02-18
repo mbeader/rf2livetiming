@@ -36,10 +36,7 @@ function handler (req, res) {
   switch(uri.pathname) {
     case '/':
     case '/index.html':
-      fs.readFile(path.join('www', 'index.html'), function(error, content) {
-        res.writeHead(200, {'Content-type': 'text/html'});
-        res.end(content, 'utf-8');
-      });
+      sendFile(res, path.join('www', 'index.html'), 'text/html');
       break;
     case '/init':
       res.writeHead(200, {'Content-type': 'application/json'});
@@ -54,36 +51,49 @@ function handler (req, res) {
       content.data = hotlaps.getData();
       res.end(JSON.stringify(content), 'utf-8');
       break;
+    case '/live':
+      sendFile(res, path.join('www', 'live.html'), 'text/html');
+      break;
     case '/map':
-      res.writeHead(200, {'Content-type': 'text/html'});
-      let cntnt = '<html><head><script type ="application/javascript" src="/socket.io/socket.io.js"></script><script type ="application/javascript" src="map.js"></script></head><body><canvas id="map" width="1000" height="1000"></canvas></body></html>'
-      res.end(cntnt, 'utf-8');
+      sendFile(res, path.join('www', 'map.html'), 'text/html');
+      break;
+    case '/socket.js':
+      sendFile(res, path.join('client', 'socket.js'), 'application/javascript');
+      break;
     case '/home.js':
-      fs.readFile(path.join('client', 'home.js'), function(error, content) {
-        fs.readFile(path.join('client', 'session.js'), function(error, content2) {
-          fs.readFile(path.join('client', 'map.js'), function(error, content3) {
-            res.writeHead(200, {'Content-type': 'application/javascript'});
-            res.end("var socket = io('/');\n" + content + content2 + content3, 'utf-8');
-          });
-        });
-      });
-    break;
+      sendFile(res, path.join('client', 'home.js'), 'application/javascript');
+      break;
+    case '/session.js':
+      sendFile(res, path.join('client', 'session.js'), 'application/javascript');
+      break;
+    case '/live.js':
+      sendFile(res, path.join('client', 'live.js'), 'application/javascript');
+      break;
     case '/map.js':
-      fs.readFile(path.join('client', uri.pathname), function(error, content) {
-        res.writeHead(200, {'Content-type': 'application/javascript'});
-        res.end("var socket = io('/');\n" + content, 'utf-8');
-      });
-    break;
+      sendFile(res, path.join('client', 'map.js'), 'application/javascript');
+      break;
     case '/TomorrowNight.css':
-      fs.readFile(path.join('www', 'css', uri.pathname), function(error, content) {
-        res.writeHead(200, {'Content-type': 'text/css'});
-        res.end(content, 'utf-8');
-      });
+      sendFile(res, path.join('www', 'css', uri.pathname), 'text/css');
       break;
     default:
-      res.writeHead(404, {'Content-type': 'text/html'});
-      res.end('404 File not found', 'utf-8');
+      send404(res);
   }
+}
+
+function sendFile(res, file, contenttype) {
+  fs.readFile(file, function(error, content) {
+    if(error)
+      send404(res);
+    else {
+      res.writeHead(200, {'Content-type': contenttype});
+      res.end(content, 'utf-8');
+    }
+  });
+}
+
+function send404(res) {
+    res.writeHead(404, {'Content-type': 'text/html'});
+    res.end('404 File not found', 'utf-8');
 }
 
 io.on('connection', function (socket) {

@@ -1,4 +1,3 @@
-//var socket = io('/map');
 var canvas;
 var context;
 var track;

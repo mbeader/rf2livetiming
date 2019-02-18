@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script type ="application/javascript" src="/socket.io/socket.io.js"></script>
+  <script type ="application/javascript" src="socket.js"></script>
+  <script type ="application/javascript" src="map.js"></script>
+  <link rel="stylesheet" type="text/css" href="TomorrowNight.css">
+</head>
+<body>
+  <header>
+    <h1 id="heading"></h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/live">Live</a>
+      <a href="/map" id="currpage">Map</a>
+      <a href="/">Laps</a>
+      <a href="/">Results</a>
+      <a href="/">Drivers</a>
+    </nav>
+  </header>
+  <main>
+    <div id="map-wrapper">
+      <canvas id="map" width="1000" height="1000"></canvas>
+    </div>
+  </main>
+</body>
+</html>
