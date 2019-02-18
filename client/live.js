@@ -1,6 +1,6 @@
 var livetable;
 var sessionbests = null;
-var lapcolumn = 10;
+var lapcolumn = 4;
 
 socket.emit('join', 'live');
 
@@ -37,7 +37,7 @@ function initLoad(e) {
       maxlaps = res.info.maxlaps;
     else
       maxlaps = null;
-    livetable = document.getElementById('live').getElementsByTagName('tbody')[0];
+    livetable = document.getElementById('live-timing').getElementsByTagName('tbody')[0];
   });
   req.open('GET', '/init');
   req.send();
@@ -83,85 +83,80 @@ function highlightBests(el) {
       let b = sessionbests.pb[el.children[1].textContent][el.children[3].textContent][el.children[2].textContent];
       let c = sessionbests.cb[el.children[3].textContent];
       if(typeof b !== 'undefined') {
-        if(el.children[5].textContent == b.s1.toFixed(3)) {
-          if(el.children[5].textContent == c.s1.toFixed(3))
-            el.children[5].className = 'cbtime';
-          else
-            el.children[5].className = 'pbtime';
-        } else
-          el.children[5].className = '';
-        if(el.children[6].textContent == b.s2.toFixed(3)) {
-          if(el.children[6].textContent == c.s2.toFixed(3))
-            el.children[6].className = 'cbtime';
-          else
-            el.children[6].className = 'pbtime';
-        } else
-          el.children[6].className = '';
-        if(el.children[7].textContent == b.s3.toFixed(3)) {
-          if(el.children[7].textContent == c.s3.toFixed(3))
-            el.children[7].className = 'cbtime';
-          else
-            el.children[7].className = 'pbtime';
-        } else
-          el.children[7].className = '';
-        if(el.children[8].textContent == b.t.toFixed(3)) {
-          if(el.children[8].textContent == c.t.toFixed(3))
-            el.children[8].className = 'cbtime';
-          else
-            el.children[8].className = 'pbtime';
-        } else
-          el.children[8].className = '';
-        if(el.children[9].textContent == c.t.toFixed(3)) {
-          el.children[9].className = 'cbtime';
-        } else
-          el.children[9].className = '';
+        highlightTime(el.children[7], el.children[12], b.s1.toFixed(3), c.s1.toFixed(3));
+        highlightTime(el.children[8], el.children[13], b.s2.toFixed(3), c.s2.toFixed(3));
+        highlightTime(el.children[9], el.children[14], b.s3.toFixed(3), c.s3.toFixed(3));
+        highlightTime(el.children[10], el.children[11], b.t.toFixed(3), c.t.toFixed(3));
+        if(typeof b.s1 !== 'undefined' && typeof b.s2 !== 'undefined' && typeof b.s3 !== 'undefined')
+          if(b.s1 < Number.MAX_VALUE && b.s2 < Number.MAX_VALUE && b.s3 < Number.MAX_VALUE)
+          el.children[15].textContent = (b.s1+b.s2+b.s3).toFixed(3);
       }
     }
   }
 }
 
+function highlightTime(es, ebs, b, c) {
+  if(es.textContent == b) {
+    ebs.textContent = b;
+    if(es.textContent == c) {
+      es.className = 'time cbtime';
+      ebs.className = 'time cbtime';
+    } else {
+      es.className = 'time pbtime';
+      ebs.className = 'time';
+    }
+  } else
+    es.className = 'time';
+}
+
 function updateLiveTableElement(el, veh) {
   el.children[0].textContent = veh.place;
+  el.children[4].textContent = veh.laps;
+  
   if(veh.timebehindleader != 0)
-    el.children[4].textContent = veh.timebehindleader.toFixed(3);
+    el.children[5].textContent = veh.timebehindleader.toFixed(3);
   else
-    el.children[4].textContent = '';
+    el.children[5].textContent = '';
+  if(veh.timebehindleader != 0)
+    el.children[6].textContent = veh.timebehindnext.toFixed(3);
+  else
+    el.children[6].textContent = '';
   if(veh.currs1 <= 0 && veh.currs2 <= 0) {
     if(veh.lasts1 <= 0) {
-      el.children[5].textContent = '';
-      el.children[6].textContent = '';
       el.children[7].textContent = '';
+      el.children[8].textContent = '';
+      el.children[9].textContent = '';
     } else if(veh.lasts2 <= 0) {
-      el.children[5].textContent = veh.lasts1.toFixed(3);
-      el.children[6].textContent = '';
-      el.children[7].textContent = '';
+      el.children[7].textContent = veh.lasts1.toFixed(3);
+      el.children[8].textContent = '';
+      el.children[9].textContent = '';
     } else if(veh.lastlap <= 0) {
-      el.children[5].textContent = veh.lasts1.toFixed(3);
-      el.children[6].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
-      el.children[7].textContent = '';
+      el.children[7].textContent = veh.lasts1.toFixed(3);
+      el.children[8].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
+      el.children[9].textContent = '';
     } else {
-      el.children[5].textContent = veh.lasts1.toFixed(3);
-      el.children[6].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
-      el.children[7].textContent = (veh.lastlap-veh.lasts2).toFixed(3);
+      el.children[7].textContent = veh.lasts1.toFixed(3);
+      el.children[8].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
+      el.children[9].textContent = (veh.lastlap-veh.lasts2).toFixed(3);
     }
   } else {
     if(veh.currs1 > 0)
-      el.children[5].textContent = veh.currs1.toFixed(3);
+      el.children[7].textContent = veh.currs1.toFixed(3);
     if(veh.currs2 > 0)
-      el.children[6].textContent = (veh.currs2-veh.currs1).toFixed(3);
+      el.children[8].textContent = (veh.currs2-veh.currs1).toFixed(3);
     else
-      el.children[6].textContent = '';
-    el.children[7].textContent = '';
+      el.children[8].textContent = '';
+    el.children[9].textContent = '';
   }
   if(veh.lastlap > 0)
-    el.children[8].textContent = veh.lastlap.toFixed(3);
+    el.children[10].textContent = veh.lastlap.toFixed(3);
   else
-    el.children[8].textContent = '';
+    el.children[10].textContent = '';
   if(veh.bestlap > 0)
-    el.children[9].textContent = veh.bestlap.toFixed(3);
+    el.children[11].textContent = veh.bestlap.toFixed(3);
   else
-    el.children[9].textContent = '';
-  el.children[10].textContent = veh.laps;
+    el.children[11].textContent = '';
+  
   let status = '';
   if(veh.status == 0) {
     if(veh.inpit)
@@ -178,7 +173,7 @@ function updateLiveTableElement(el, veh) {
     status = 'DNF';
   else if(veh.status == 3)
     status = 'DQ';
-  el.children[11].textContent = status;
+  el.children[17].textContent = status;
   if(sessionbests != null)
     highlightBests(el);
 }
@@ -190,13 +185,19 @@ function createLiveElement(veh) {
   t += '<td></td>';
   t += '<td></td>';
   t += '<td></td>';
-  t += '<td class="time"></td>';
-  t += '<td class="time"></td>';
-  t += '<td class="time"></td>';
-  t += '<td class="time"></td>';
-  t += '<td class="time"></td>';
-  t += '<td class="time"></td>';
   t += '<td>' + veh.laps + '</td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td class="time"></td>';
+  t += '<td>' + veh.numpits + '</td>';
   t += '<td></td>';
   e.innerHTML = t;
   if(veh.isAI)

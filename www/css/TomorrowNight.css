@@ -41,17 +41,23 @@ body {
   width: 49.5%;
 }
 
-#hotlaps, #live {
+#hotlaps, #live, #live-timing {
   table-layout: fixed;
 }
 
-#hotlaps td:nth-child(3), #live td:nth-child(3) {
+#hotlaps td:nth-child(3), #live td:nth-child(3), #live-timing td:nth-child(3) {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-#hotlaps td:nth-child(2), #live td:nth-child(2) {
+#hotlaps td:nth-child(2), #live td:nth-child(2), #live-timing td:nth-child(2) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#hotlaps td:nth-child(4), #live td:nth-child(4), #live-timing td:nth-child(4) {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -75,6 +81,23 @@ body {
 #live th:nth-child(10) {width: 7%;}
 #live th:nth-child(11) {width: 3%;}
 #live th:nth-child(12) {width: 4.5%;}
+
+#live-timing th:nth-child(1) {width: 1.25%;}
+#live-timing th:nth-child(4) {width: 10%;}
+#live-timing th:nth-child(5) {width: 1.5%;}
+#live-timing th:nth-child(6) {width: 3%;}
+#live-timing th:nth-child(7) {width: 3%;}
+#live-timing th:nth-child(8) {width: 2.5%;}
+#live-timing th:nth-child(9) {width: 2.5%;}
+#live-timing th:nth-child(10) {width: 2.5%;}
+#live-timing th:nth-child(11) {width: 3.5%;}
+#live-timing th:nth-child(12) {width: 3.5%;}
+#live-timing th:nth-child(13) {width: 2.5%;}
+#live-timing th:nth-child(14) {width: 2.5%;}
+#live-timing th:nth-child(15) {width: 2.5%;}
+#live-timing th:nth-child(16) {width: 3.5%;}
+#live-timing th:nth-child(17) {width: 1.5%;}
+#live-timing th:nth-child(18) {width: 2.25%;}
 
 table {
   width: 100%;
