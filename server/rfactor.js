@@ -180,8 +180,11 @@ function parseEventStream(res) {
   for(let i = 0; i < rawevents.length; i++) {
     if(rawevents[i].startsWith('<Score'))
       events.score.push(score2Obj(rawevents[i].split('>')[1].split('</Score')[0]));
-    else if(rawevents[i].startsWith('<Chat'))
-      events.chat.push(chat2Obj(rawevents[i].split('>')[1].split('</Chat')[0]));
+    else if(rawevents[i].startsWith('<Chat')) {
+      let temp = chat2Obj(rawevents[i].split('>')[1].split('</Chat')[0]);
+      if(temp !== null)
+        events.chat.push(temp);
+    }
   }
   return events;
 }
@@ -209,9 +212,12 @@ function chat2Obj(xml) {
   let e = new Object();
   for(let i = 0; i < xmlescapes.length; i++)
     xml = xml.replace(new RegExp(xmlescapes[i], 'gi'), xmlchars[i]);
-  /*if(xml.charAt(0) == '>')
-    e.name = 'Server';
-  else
+  if(xml.charAt(0) == '>') {
+    if(xml.charAt(2) == '/')
+      return null;
+    xml = 'Server:' + xml.substring(1);
+  }
+  /*else
     e.name = xml.substring(0, xml.indexOf(': '));
   e.message = xml.substring(xml.indexOf(': ')+3);*/
   return xml;
