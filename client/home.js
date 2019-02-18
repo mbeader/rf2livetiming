@@ -229,41 +229,28 @@ function highlightBests(el) {
       let b = sessionbests.pb[el.children[1].textContent][el.children[3].textContent][el.children[2].textContent];
       let c = sessionbests.cb[el.children[3].textContent];
       if(typeof b !== 'undefined') {
-        if(el.children[5].textContent == b.s1.toFixed(3)) {
-          if(el.children[5].textContent == c.s1.toFixed(3))
-            el.children[5].className = 'cbtime';
-          else
-            el.children[5].className = 'pbtime';
-        } else
-          el.children[5].className = '';
-        if(el.children[6].textContent == b.s2.toFixed(3)) {
-          if(el.children[6].textContent == c.s2.toFixed(3))
-            el.children[6].className = 'cbtime';
-          else
-            el.children[6].className = 'pbtime';
-        } else
-          el.children[6].className = '';
-        if(el.children[7].textContent == b.s3.toFixed(3)) {
-          if(el.children[7].textContent == c.s3.toFixed(3))
-            el.children[7].className = 'cbtime';
-          else
-            el.children[7].className = 'pbtime';
-        } else
-          el.children[7].className = '';
-        if(el.children[8].textContent == b.t.toFixed(3)) {
-          if(el.children[8].textContent == c.t.toFixed(3))
-            el.children[8].className = 'cbtime';
-          else
-            el.children[8].className = 'pbtime';
-        } else
-          el.children[8].className = '';
+        highlightTime(el.children[5], b.s1.toFixed(3), c.s1.toFixed(3));
+        highlightTime(el.children[6], b.s2.toFixed(3), c.s2.toFixed(3));
+        highlightTime(el.children[7], b.s3.toFixed(3), c.s3.toFixed(3));
+        highlightTime(el.children[8], b.t.toFixed(3), c.t.toFixed(3));
         if(el.children[9].textContent == c.t.toFixed(3)) {
-          el.children[9].className = 'cbtime';
+          el.children[9].className = 'time cbtime';
         } else
-          el.children[9].className = '';
+          el.children[9].className = 'time';
       }
     }
   }
+}
+
+function highlightTime(es, b, c) {
+  if(es.textContent == b) {
+    if(es.textContent == c) {
+      es.className = 'time cbtime';
+    } else {
+      es.className = 'time pbtime';
+    }
+  } else
+    es.className = 'time';
 }
 
 function updateLiveTableElement(el, veh) {
