@@ -24,7 +24,6 @@ state.phase.name = '';
 state.phase.yellow = '';
 state.phase.sectors = [0,0,0];
 var timer;
-var mapnamespace = io.of('/map');
 var exists = false;
 var sessionbests = new Tracker();
 
@@ -107,12 +106,6 @@ io.on('connection', function (socket) {
     } else if(room == 'live')
       socket.emit('bests', sessionbests.bests);
   });
-});
-
-mapnamespace.on('connection', function (socket) {
-  socket.emit('classes', classcolors);
-  if(exists)
-    socket.emit('map', mapbuilder.getTrackMap());
 });
 
 const userver = dgram.createSocket('udp4');
