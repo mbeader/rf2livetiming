@@ -150,9 +150,9 @@ function createHotlapsElement(lap) {
   let e = document.createElement('tr');
   let t = '';
   t += '<td></td>';
-  t += '<td>' + lap.name + '</td>';
-  t += '<td>' + lap.veh + '</td>';
-  t += '<td>' + lap.vehclass + '</td>';
+  t += '<td></td>';
+  t += '<td></td>';
+  t += '<td></td>';
   if(lap.bestlap.s1 == undefined)
     t += '<td class="time">-</td>';
   else
@@ -169,6 +169,12 @@ function createHotlapsElement(lap) {
   e.innerHTML = t;
   if(lap.ai)
     e.setAttribute('ai', 'true');
+  e.children[1].textContent = lap.name;
+  e.children[1].title = lap.name;
+  e.children[2].textContent = lap.veh;
+  e.children[2].title = lap.veh;
+  e.children[3].textContent = lap.vehclass;
+  e.children[3].title = lap.vehclass;
   return e;
 }
 
@@ -327,9 +333,9 @@ function createLiveElement(veh) {
   let e = document.createElement('tr');
   let t = '';
   t += '<td>' + veh.place + '</td>';
-  t += '<td>' + veh.drivername + '</td>';
-  t += '<td>' + veh.vehname + '</td>';
-  t += '<td>' + veh.vehclass + '</td>';
+  t += '<td></td>';
+  t += '<td></td>';
+  t += '<td></td>';
   t += '<td class="time"></td>';
   t += '<td class="time"></td>';
   t += '<td class="time"></td>';
@@ -341,6 +347,12 @@ function createLiveElement(veh) {
   e.innerHTML = t;
   if(veh.isAI)
     e.setAttribute('ai', 'true');
+  e.children[1].textContent = veh.drivername;
+  e.children[1].title = veh.drivername;
+  e.children[2].textContent = veh.vehname;
+  e.children[2].title = veh.vehname;
+  e.children[3].textContent = veh.vehclass;
+  e.children[3].title = veh.vehclass;
   return e;
 }
 

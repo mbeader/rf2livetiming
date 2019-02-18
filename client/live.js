@@ -187,9 +187,9 @@ function createLiveElement(veh) {
   let e = document.createElement('tr');
   let t = '';
   t += '<td>' + veh.place + '</td>';
-  t += '<td>' + veh.drivername + '</td>';
-  t += '<td>' + veh.vehname + '</td>';
-  t += '<td>' + veh.vehclass + '</td>';
+  t += '<td></td>';
+  t += '<td></td>';
+  t += '<td></td>';
   t += '<td class="time"></td>';
   t += '<td class="time"></td>';
   t += '<td class="time"></td>';
@@ -201,6 +201,12 @@ function createLiveElement(veh) {
   e.innerHTML = t;
   if(veh.isAI)
     e.setAttribute('ai', 'true');
+  e.children[1].textContent = veh.drivername;
+  e.children[1].title = veh.drivername;
+  e.children[2].textContent = veh.vehname;
+  e.children[2].title = veh.vehname;
+  e.children[3].textContent = veh.vehclass;
+  e.children[3].title = veh.vehclass;
   return e;
 }
 
