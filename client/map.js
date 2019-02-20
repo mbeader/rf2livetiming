@@ -3,6 +3,7 @@ var context;
 var track;
 var dy, dx, cy = 0, cx = 0;
 var dim, scalefactor = 1;
+var scaled = new Object();
 var classcolors;
 var colors = ['red', 'blue', 'lime', 'yellow', 'magenta', 'aqua', 'orange', 'white', 'gray', 'silver'];
 var edges = {maxx: Number.MIN_SAFE_INTEGER, minx: Number.MAX_SAFE_INTEGER, maxy: Number.MIN_SAFE_INTEGER, miny: Number.MAX_SAFE_INTEGER};
@@ -49,17 +50,18 @@ socket.on('veh', function (veh) {
     context.fillStyle = fillcolor;
     context.lineWidth = 2;
     context.beginPath();
-    context.arc(veh[num].x+dim-cx, dim-veh[num].y+cy, 10, 0, Math.PI * 2, true);
+    context.arc(veh[num].x*scalefactor+dim-scaled.cx, dim-veh[num].y*scalefactor+scaled.cy, 10, 0, Math.PI * 2, true);
     context.stroke();
     context.fill();
     context.fillStyle = textcolor;
     context.font = '12px serif';
     context.textAlign = 'center';
-    context.fillText(num, veh[num].x+dim-cx, dim-veh[num].y+cy+4);
+    context.fillText(num, veh[num].x*scalefactor+dim-scaled.cx, dim-veh[num].y*scalefactor+scaled.cy+4);
   });
   if(changed) {
     cx = (edges.maxx + edges.minx)/2;
     cy = (edges.maxy + edges.miny)/2;
+    calcScaleFactor(edges.maxx - edges.minx, edges.maxy - edges.miny);
   }
 });
 
@@ -69,7 +71,7 @@ socket.on('map', function (map) {
   dy = track.maxy - track.miny;
   cx = (track.maxx + track.minx)/2;
   cy = (track.maxy + track.miny)/2;
-  calcScaleFactor();
+  calcScaleFactor(dx, dy);
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawTrack();
 });
@@ -111,24 +113,28 @@ function drawSector(sector, end, color) {
   context.strokeStyle = color;
     context.beginPath();
     for(let i = 0; i < sector.length; i++)
-      context.lineTo(sector[i].x+dim-cx, dim-sector[i].y+cy);
-    context.lineTo(end.x+dim-cx, dim-end.y+cy);
+      context.lineTo(sector[i].x*scalefactor+dim-scaled.cx, dim-scalefactor*sector[i].y+scaled.cy);
+    context.lineTo(end.x*scalefactor+dim-scaled.cx, dim-scalefactor*end.y+scaled.cy);
     context.stroke();
 }
 
 function drawSectorMarker(prev, center, next) {
   let angle = -1*Math.atan2(next.y - prev.y, next.x - prev.x);
   context.save();
-  context.translate(center.x+dim-cx, dim-center.y+cy);
+  context.translate(center.x*scalefactor+dim-scaled.cx, dim-center.y*scalefactor+scaled.cy);
   context.rotate(angle);
-  context.translate(-1*(center.x+dim-cx), -1*(dim-center.y+cy));
-  context.fillRect(center.x+dim-cx-3, dim-center.y+cy-15, 6, 30);
+  context.translate(-1*(center.x*scalefactor+dim-scaled.cx), -1*(dim-center.y*scalefactor+scaled.cy));
+  context.fillRect(center.x*scalefactor+dim-scaled.cx-3, dim-center.y*scalefactor+scaled.cy-15, 6, 30);
   context.restore();
 }
 
-function calcScaleFactor() {
+function calcScaleFactor(dx, dy) {
   if(dx > dy)
     scalefactor = (canvas.width*.8)/dx;
   else
     scalefactor = (canvas.height*.8)/dy;
+  scaled.dx = scalefactor*dx;
+  scaled.dy = scalefactor*dy;
+  scaled.cx = scalefactor*cx;
+  scaled.cy = scalefactor*cy;
 }
