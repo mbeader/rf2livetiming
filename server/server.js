@@ -26,6 +26,7 @@ state.phase.sectors = [0,0,0];
 var timer;
 var exists = false;
 var sessionbests = new Tracker();
+var lock = null;
 
 server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
@@ -128,6 +129,10 @@ userver.on('error', (err) => {
 userver.on('message', (msg, rinfo) => {
   if(rinfo.address != config.RF2_SRC_ADDR)
     return;
+  if(lock == null)
+    lock = {addr: rinfo.address, port: rinfo.port};
+  else if(lock.addr !== rinfo.address || lock.port !== rinfo.port)
+    return;
   if(typeof timer !== "undefined")
     clearTimeout(timer);
   let packet = rfactor.parseUDPPacket(msg);
@@ -214,7 +219,8 @@ userver.on('message', (msg, rinfo) => {
     sessionbests = new Tracker();
     io.to('live').emit('session', state);
     io.to('live').emit('bests', sessionbests.bests);
-  }, 5000);
+    lock = null;
+  }, 10000);
 });
 
 userver.on('listening', () => {
