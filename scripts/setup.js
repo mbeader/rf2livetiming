@@ -3,10 +3,14 @@ const path   = require('path');
 
 createConfig();
 createClassColorsConfig();
-fs.mkdir('data', function(err) {
+fs.mkdir('data', errCheck(err));
+fs.mkdir(path.join('data', 'hotlaps'), errCheck(err));
+fs.mkdir(path.join('data', 'maps'), errCheck(err));
+
+function errCheck(err) {
   if (err instanceof Error && err.code !== "EEXIST")
     throw err;
-});
+}
 
 function createConfig() {
   let example;
