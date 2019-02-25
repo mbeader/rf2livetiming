@@ -3,9 +3,9 @@ const path   = require('path');
 
 createConfig();
 createClassColorsConfig();
-fs.mkdir('data', errCheck(err));
-fs.mkdir(path.join('data', 'hotlaps'), errCheck(err));
-fs.mkdir(path.join('data', 'maps'), errCheck(err));
+fs.mkdir('data', errCheck);
+fs.mkdir(path.join('data', 'hotlaps'), errCheck);
+fs.mkdir(path.join('data', 'maps'), errCheck);
 
 function errCheck(err) {
   if (err instanceof Error && err.code !== "EEXIST")
