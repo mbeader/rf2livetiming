@@ -22,7 +22,6 @@ function initLoad(e) {
   let req = new XMLHttpRequest();
   req.addEventListener('load', function () {
     let res = JSON.parse(this.responseText);
-    document.title = res.title;
     document.getElementById('heading').textContent = res.heading;
     document.getElementById('join').href = res.link;
     if(res.info.track !== '' && res.info.session !== '') {
