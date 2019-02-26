@@ -39,6 +39,7 @@ body {
   text-align: left;
   vertical-align: top;
   width: 49.5%;
+  margin-bottom: 15px;
 }
 
 #hotlaps, #live, #live-timing {
@@ -259,7 +260,7 @@ tr[ai="true"] {
   border: 1px solid #282a2e;
 }
 
-#map-wrapper, #live-wrapper, #main-wrapper {
+#map-wrapper, #live-wrapper {
   margin-bottom: 15px;
 }
 
