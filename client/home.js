@@ -127,10 +127,10 @@ function updateHotlapsTable(laps) {
     for(let j = 0; j < hltable.children.length; j++) {
       if(hltable.children[j].children[1].textContent == laps[i].name && hltable.children[j].children[3].textContent == laps[i].vehclass && hltable.children[j].children[2].textContent == laps[i].veh) {
         if(Number.parseFloat(hltable.children[j].children[7].textContent) > laps[i].bestlap.t) {
-          hltable.children[j].children[4].textContent = laps[i].bestlap.s1.toFixed(3);
-          hltable.children[j].children[5].textContent = laps[i].bestlap.s2.toFixed(3);
-          hltable.children[j].children[6].textContent = laps[i].bestlap.s3.toFixed(3);
-          hltable.children[j].children[7].textContent = laps[i].bestlap.t.toFixed(3);
+          hltable.children[j].children[4].textContent = secToTime(laps[i].bestlap.s1);
+          hltable.children[j].children[5].textContent = secToTime(laps[i].bestlap.s2);
+          hltable.children[j].children[6].textContent = secToTime(laps[i].bestlap.s3);
+          hltable.children[j].children[7].textContent = secToTime(laps[i].bestlap.t);
           newupdates.push(hltable.children[j]);
         }
         found = true;
@@ -156,16 +156,16 @@ function createHotlapsElement(lap) {
   if(lap.bestlap.s1 == undefined)
     t += '<td class="time">-</td>';
   else
-    t += '<td class="time">' + lap.bestlap.s1.toFixed(3) + '</td>';
+    t += '<td class="time">' + secToTime(lap.bestlap.s1) + '</td>';
   if(lap.bestlap.s2 == undefined)
     t += '<td class="time">-</td>';
   else
-    t += '<td class="time">' + lap.bestlap.s2.toFixed(3) + '</td>';
+    t += '<td class="time">' + secToTime(lap.bestlap.s2) + '</td>';
   if(lap.bestlap.s3 == undefined)
     t += '<td class="time">-</td>';
   else
-    t += '<td class="time">' + lap.bestlap.s3.toFixed(3) + '</td>';
-  t += '<td class="time">' + lap.bestlap.t.toFixed(3) + '</td>';
+    t += '<td class="time">' + secToTime(lap.bestlap.s3) + '</td>';
+  t += '<td class="time">' + secToTime(lap.bestlap.t) + '</td>';
   e.innerHTML = t;
   if(lap.ai)
     e.setAttribute('ai', 'true');
@@ -229,11 +229,11 @@ function highlightBests(el) {
       let b = sessionbests.pb[el.children[1].textContent][el.children[3].textContent][el.children[2].textContent];
       let c = sessionbests.cb[el.children[3].textContent];
       if(typeof b !== 'undefined') {
-        highlightTime(el.children[5], b.s1.toFixed(3), c.s1.toFixed(3));
-        highlightTime(el.children[6], b.s2.toFixed(3), c.s2.toFixed(3));
-        highlightTime(el.children[7], b.s3.toFixed(3), c.s3.toFixed(3));
-        highlightTime(el.children[8], b.t.toFixed(3), c.t.toFixed(3));
-        if(el.children[9].textContent == c.t.toFixed(3)) {
+        highlightTime(el.children[5], secToTime(b.s1), secToTime(c.s1));
+        highlightTime(el.children[6], secToTime(b.s2), secToTime(c.s2));
+        highlightTime(el.children[7], secToTime(b.s3), secToTime(c.s3));
+        highlightTime(el.children[8], secToTime(b.t), secToTime(c.t));
+        if(el.children[9].textContent == secToTime(c.t)) {
           el.children[9].className = 'time cbtime';
         } else
           el.children[9].className = 'time';
@@ -265,33 +265,33 @@ function updateLiveTableElement(el, veh) {
       el.children[6].textContent = '';
       el.children[7].textContent = '';
     } else if(veh.lasts2 <= 0) {
-      el.children[5].textContent = veh.lasts1.toFixed(3);
+      el.children[5].textContent = secToTime(veh.lasts1);
       el.children[6].textContent = '';
       el.children[7].textContent = '';
     } else if(veh.lastlap <= 0) {
-      el.children[5].textContent = veh.lasts1.toFixed(3);
-      el.children[6].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
+      el.children[5].textContent = secToTime(veh.lasts1);
+      el.children[6].textContent = secToTime(veh.lasts2-veh.lasts1);
       el.children[7].textContent = '';
     } else {
-      el.children[5].textContent = veh.lasts1.toFixed(3);
-      el.children[6].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
-      el.children[7].textContent = (veh.lastlap-veh.lasts2).toFixed(3);
+      el.children[5].textContent = secToTime(veh.lasts1);
+      el.children[6].textContent = secToTime(veh.lasts2-veh.lasts1);
+      el.children[7].textContent = secToTime(veh.lastlap-veh.lasts2);
     }
   } else {
     if(veh.currs1 > 0)
-      el.children[5].textContent = veh.currs1.toFixed(3);
+      el.children[5].textContent = secToTime(veh.currs1);
     if(veh.currs2 > 0)
-      el.children[6].textContent = (veh.currs2-veh.currs1).toFixed(3);
+      el.children[6].textContent = secToTime(veh.currs2-veh.currs1);
     else
       el.children[6].textContent = '';
     el.children[7].textContent = '';
   }
   if(veh.lastlap > 0)
-    el.children[8].textContent = veh.lastlap.toFixed(3);
+    el.children[8].textContent = secToTime(veh.lastlap);
   else
     el.children[8].textContent = '';
   if(veh.bestlap > 0)
-    el.children[9].textContent = veh.bestlap.toFixed(3);
+    el.children[9].textContent = secToTime(veh.bestlap);
   else
     el.children[9].textContent = '';
   el.children[10].textContent = veh.laps;

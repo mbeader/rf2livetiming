@@ -66,18 +66,18 @@ body {
 
 #hotlaps th:nth-child(1) {width: 2.5%;}
 #hotlaps th:nth-child(3) {width: 30%;}
-#hotlaps th:nth-child(5) {width: 5%;}
-#hotlaps th:nth-child(6) {width: 5%;}
-#hotlaps th:nth-child(7) {width: 5%;}
+#hotlaps th:nth-child(5) {width: 6%;}
+#hotlaps th:nth-child(6) {width: 6%;}
+#hotlaps th:nth-child(7) {width: 6%;}
 #hotlaps th:nth-child(8) {width: 7%;}
 
 
 #live th:nth-child(1) {width: 2.5%;}
 #live th:nth-child(4) {width: 10%;}
 #live th:nth-child(5) {width: 6%;}
-#live th:nth-child(6) {width: 5%;}
-#live th:nth-child(7) {width: 5%;}
-#live th:nth-child(8) {width: 5%;}
+#live th:nth-child(6) {width: 6%;}
+#live th:nth-child(7) {width: 6%;}
+#live th:nth-child(8) {width: 6%;}
 #live th:nth-child(9) {width: 7%;}
 #live th:nth-child(10) {width: 7%;}
 #live th:nth-child(11) {width: 3%;}

@@ -82,13 +82,13 @@ function highlightBests(el) {
       let b = sessionbests.pb[el.children[1].textContent][el.children[3].textContent][el.children[2].textContent];
       let c = sessionbests.cb[el.children[3].textContent];
       if(typeof b !== 'undefined') {
-        highlightTime(el.children[7], el.children[12], b.s1.toFixed(3), c.s1.toFixed(3));
-        highlightTime(el.children[8], el.children[13], b.s2.toFixed(3), c.s2.toFixed(3));
-        highlightTime(el.children[9], el.children[14], b.s3.toFixed(3), c.s3.toFixed(3));
-        highlightTime(el.children[10], el.children[11], b.t.toFixed(3), c.t.toFixed(3));
+        highlightTime(el.children[7], el.children[12], secToTime(b.s1), secToTime(c.s1));
+        highlightTime(el.children[8], el.children[13], secToTime(b.s2), secToTime(c.s2));
+        highlightTime(el.children[9], el.children[14], secToTime(b.s3), secToTime(c.s3));
+        highlightTime(el.children[10], el.children[11], secToTime(b.t), secToTime(c.t));
         if(typeof b.s1 !== 'undefined' && typeof b.s2 !== 'undefined' && typeof b.s3 !== 'undefined')
           if(b.s1 < Number.MAX_VALUE && b.s2 < Number.MAX_VALUE && b.s3 < Number.MAX_VALUE)
-          el.children[15].textContent = (b.s1+b.s2+b.s3).toFixed(3);
+          el.children[15].textContent = secToTime((b.s1+b.s2+b.s3));
       }
     }
   }
@@ -126,33 +126,33 @@ function updateLiveTableElement(el, veh) {
       el.children[8].textContent = '';
       el.children[9].textContent = '';
     } else if(veh.lasts2 <= 0) {
-      el.children[7].textContent = veh.lasts1.toFixed(3);
+      el.children[7].textContent = secToTime(veh.lasts1);
       el.children[8].textContent = '';
       el.children[9].textContent = '';
     } else if(veh.lastlap <= 0) {
-      el.children[7].textContent = veh.lasts1.toFixed(3);
-      el.children[8].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
+      el.children[7].textContent = secToTime(veh.lasts1);
+      el.children[8].textContent = secToTime(veh.lasts2-veh.lasts1);
       el.children[9].textContent = '';
     } else {
-      el.children[7].textContent = veh.lasts1.toFixed(3);
-      el.children[8].textContent = (veh.lasts2-veh.lasts1).toFixed(3);
-      el.children[9].textContent = (veh.lastlap-veh.lasts2).toFixed(3);
+      el.children[7].textContent = secToTime(veh.lasts1);
+      el.children[8].textContent = secToTime(veh.lasts2-veh.lasts1);
+      el.children[9].textContent = secToTime(veh.lastlap-veh.lasts2);
     }
   } else {
     if(veh.currs1 > 0)
-      el.children[7].textContent = veh.currs1.toFixed(3);
+      el.children[7].textContent = secToTime(veh.currs1);
     if(veh.currs2 > 0)
-      el.children[8].textContent = (veh.currs2-veh.currs1).toFixed(3);
+      el.children[8].textContent = secToTime(veh.currs2-veh.currs1);
     else
       el.children[8].textContent = '';
     el.children[9].textContent = '';
   }
   if(veh.lastlap > 0)
-    el.children[10].textContent = veh.lastlap.toFixed(3);
+    el.children[10].textContent = secToTime(veh.lastlap);
   else
     el.children[10].textContent = '';
   if(veh.bestlap > 0)
-    el.children[11].textContent = veh.bestlap.toFixed(3);
+    el.children[11].textContent = secToTime(veh.bestlap);
   else
     el.children[11].textContent = '';
   
