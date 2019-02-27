@@ -91,8 +91,41 @@ document.addEventListener('DOMContentLoaded', initMapLoad, false);
 function initMapLoad(e) {
   canvas = document.getElementById('map');
   context = canvas.getContext('2d');
+  if(window.location.pathname == '/map') {
+    resizeMap();
+    window.addEventListener('resize', resizeMap, true);
+  } else {
+    resizeMapHome();
+    window.addEventListener('resize', resizeMapHome, true);
+  }
+}
+
+function resizeMap() {
+  let tempwidth = document.getElementById('map-wrapper').offsetWidth;
+  if(document.documentElement.scrollHeight > document.documentElement.clientHeight)
+    while(document.documentElement.scrollHeight > document.documentElement.clientHeight)
+      canvas.height--;
+  else {
+    do {
+      canvas.height++;
+    } while(document.documentElement.scrollHeight == document.documentElement.clientHeight);
+  }
+  canvas.width = tempwidth > canvas.height ? canvas.height : tempwidth;
+  canvas.height = canvas.width;
   dim = canvas.width/2;
-  canvas.style.width = document.getElementById('map-wrapper').offsetWidth + 'px';
+  if(typeof track !== "undefined") {
+    calcScaleFactor(dx, dy);
+    drawTrack();
+  }
+}
+function resizeMapHome() {
+  canvas.width = document.getElementById('map-wrapper').offsetWidth;
+  canvas.height = canvas.width;
+  dim = canvas.width/2;
+  if(typeof track !== "undefined") {
+    calcScaleFactor(dx, dy);
+    drawTrack();
+  }
 }
 
 function drawTrack() {
@@ -133,6 +166,11 @@ function calcScaleFactor(dx, dy) {
     scalefactor = (canvas.width*.8)/dx;
   else
     scalefactor = (canvas.height*.8)/dy;
+  let wx = 0, wy = 0;
+  if(canvas.width > canvas.height)
+    wx = canvas.width/4;
+  else
+    wy = canvas.height/2;
   scaled.dx = scalefactor*dx;
   scaled.dy = scalefactor*dy;
   scaled.cx = scalefactor*cx;

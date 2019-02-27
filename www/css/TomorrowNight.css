@@ -260,6 +260,14 @@ tr[ai="true"] {
   border: 1px solid #282a2e;
 }
 
+#map-wrapper {
+  text-align: center;
+}
+
+#map-wrapper p {
+  text-align: left;
+}
+
 #map-wrapper, #live-wrapper {
   margin-bottom: 15px;
 }
