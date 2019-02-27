@@ -58,8 +58,8 @@ function handler (req, res) {
     case '/map':
       sendFile(res, path.join('www', 'map.html'), 'text/html');
       break;
-    case '/socket.js':
-      sendFile(res, path.join('client', 'socket.js'), 'application/javascript');
+    case '/common.js':
+      sendFile(res, path.join('client', 'common.js'), 'application/javascript');
       break;
     case '/home.js':
       sendFile(res, path.join('client', 'home.js'), 'application/javascript');
