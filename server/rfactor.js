@@ -16,12 +16,30 @@ function parseUDPPacket(msg)  {
 }
 
 function parseScoringPacket(msg, p)  {
+  let k;
   let pointer = 5;
-  for(pointer = 5; pointer < 69; pointer++)
-    if(msg.readUInt8(pointer) == 0)
-      break;
-  p.trackname = msg.toString('ascii', 5, pointer);
-  p.sessionid = msg.readUInt32LE(++pointer);
+  
+  p.server = new Object();
+  p.server.ip = msg.readUInt32LE(pointer);
+  pointer += 4;
+  p.server.port = msg.readUInt16LE(pointer);
+  pointer += 2;
+  for(i = 0; i < pointer + 32; i++)
+      if(msg.readUInt8(pointer+i) == 0)
+        break;
+  p.server.name = msg.toString('ascii', pointer, pointer+i);
+  pointer = pointer + i + 1;
+  p.server.maxplayers = msg.readUInt32LE(pointer);
+  pointer += 4;
+  p.server.starttime = msg.readFloatLE(pointer);
+  pointer += 4;
+  
+  for(k = 0; k < pointer + 64; k++)
+      if(msg.readUInt8(pointer+k) == 0)
+        break;
+  p.trackname = msg.toString('ascii', pointer, pointer+k);
+  pointer = pointer + k + 1;
+  p.sessionid = msg.readUInt32LE(pointer);
   switch(p.sessionid) {
     case 0: p.sessionname = "Test Day";
     break;
@@ -68,7 +86,9 @@ function parseScoringPacket(msg, p)  {
     break;
     case 7: p.phasename = "Session stopped";
     break;
-    case 8: p.phasename = "Session over";
+    case 8: p.phasename = "Checkered";
+    break;
+    case 9: p.phasename = "Paused";
     break;
     default: p.phasename = "Unknown";
   }
