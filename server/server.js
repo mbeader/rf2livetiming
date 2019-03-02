@@ -23,6 +23,7 @@ state.phase = new Object();
 state.phase.name = '';
 state.phase.yellow = '';
 state.phase.sectors = [0,0,0];
+var rf2server = {name: null, ip: null, port: null};
 var timer;
 var exists = false;
 var sessionbests = new Tracker();
@@ -33,7 +34,7 @@ console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
 
 function handler (req, res) {
   var uri = url.parse(req.url);
-  
+  let content;
   switch(uri.pathname) {
     case '/':
     case '/index.html':
@@ -41,15 +42,20 @@ function handler (req, res) {
       break;
     case '/init':
       res.writeHead(200, {'Content-type': 'application/json'});
-      let content = new Object();
-      content.title = config.BASE_TITLE;
-      content.heading = config.PAGE_HEADING;
-      content.link = config.JOIN_LINK;
+      content = new Object();
       content.info = state;
       delete content.info.drivers;
       if(state.track == '')
         content.info.track = hotlaps.getTrack();
       content.data = hotlaps.getData();
+      res.end(JSON.stringify(content), 'utf-8');
+      break;
+    case '/info':
+      res.writeHead(200, {'Content-type': 'application/json'});
+      content = new Object();
+      content.name = rf2server.name;
+      content.ip = config.RF2_PUBLIC_ADDR;
+      content.port = rf2server.port;
       res.end(JSON.stringify(content), 'utf-8');
       break;
     case '/live':
@@ -138,6 +144,7 @@ userver.on('message', (msg, rinfo) => {
   let packet = rfactor.parseUDPPacket(msg);
   if(typeof packet === "undefined")
     return;
+  rf2server = packet.server;
   if(packet.trackname != state.track || packet.sessionname != state.session || state.currtime > packet.currtime) {
     if(packet.trackname != state.track)
       io.emit('refresh');
@@ -216,6 +223,7 @@ userver.on('message', (msg, rinfo) => {
     state.phase.name = '';
     state.phase.yellow = '';
     state.phase.sectors = [0,0,0];
+    rf2server = {name: null, ip: null, port: null};
     sessionbests = new Tracker();
     io.to('live').emit('session', state);
     io.to('live').emit('bests', sessionbests.bests);

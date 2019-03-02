@@ -17,6 +17,7 @@ socket.on('session', function (state) {
   else
     maxlaps = null;
   updateRemainingLaps();
+  getInfo();
 });
 
 socket.on('phase', function (phase) {

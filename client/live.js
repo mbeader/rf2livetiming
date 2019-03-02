@@ -22,8 +22,6 @@ function initLoad(e) {
   let req = new XMLHttpRequest();
   req.addEventListener('load', function () {
     let res = JSON.parse(this.responseText);
-    document.getElementById('heading').textContent = res.heading;
-    document.getElementById('join').href = res.link;
     if(res.info.track !== '' && res.info.session !== '') {
       document.getElementById('session').textContent = res.info.session + ' @ ' + res.info.track;
       updatePhase(res.info.phase);
