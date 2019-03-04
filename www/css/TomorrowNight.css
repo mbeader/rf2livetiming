@@ -6,7 +6,7 @@ body {
   margin: 8px 0px;
 }
 
-#session {
+#session, #track {
   text-align: center;
   color: #c5c8c6;
   font-size: 14pt;

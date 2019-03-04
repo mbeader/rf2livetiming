@@ -167,16 +167,33 @@ function loadDB(track) {
   return temp;
 }
 
-function getData() {
-  return db.data;
+function getData(t) {
+  if(typeof t === 'undefined')
+    return db.data;
+  if(t == state.lasttrack)
+    return db.data;
+  else
+    return loadDB(t).data;
 }
 
 function getTrack() {
   return state.lasttrack;
 }
 
+function getTracks() {
+  let t = fs.readdirSync(path.join('data', 'hotlaps'));
+  for(let i = t.length-1; i >= 0; i--) {
+    if(t[i].endsWith('.json'))
+      t[i] = t[i].slice(0, -5);
+    else
+      t.splice(i, 1);
+  }
+  return t;
+}
+
 module.exports = {
   onUpdate: onUpdate,
   getData: getData,
-  getTrack: getTrack
+  getTrack: getTrack,
+  getTracks: getTracks
 }

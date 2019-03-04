@@ -33,7 +33,7 @@ server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
 
 function handler (req, res) {
-  var uri = url.parse(req.url);
+  var uri = url.parse(req.url, true);
   let content;
   switch(uri.pathname) {
     case '/':
@@ -56,6 +56,18 @@ function handler (req, res) {
       content.name = rf2server.name;
       content.ip = config.RF2_PUBLIC_ADDR;
       content.port = rf2server.port;
+      res.end(JSON.stringify(content), 'utf-8');
+      break;
+    case '/tracks':
+      res.writeHead(200, {'Content-type': 'application/json'});
+      content = new Object();
+      content.current = (state.track == '') ? null : server.track;
+      content.tracks = hotlaps.getTracks();
+      res.end(JSON.stringify(content), 'utf-8');
+      break;
+    case '/laptimes':
+      res.writeHead(200, {'Content-type': 'application/json'});
+      content = hotlaps.getData(uri.query.t);
       res.end(JSON.stringify(content), 'utf-8');
       break;
     case '/live':
