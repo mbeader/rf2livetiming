@@ -61,7 +61,7 @@ function handler (req, res) {
     case '/tracks':
       res.writeHead(200, {'Content-type': 'application/json'});
       content = new Object();
-      content.current = (state.track == '') ? null : server.track;
+      content.current = (state.track == '') ? null : state.track;
       content.tracks = hotlaps.getTracks();
       res.end(JSON.stringify(content), 'utf-8');
       break;
