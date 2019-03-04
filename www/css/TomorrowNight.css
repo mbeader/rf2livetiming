@@ -291,3 +291,14 @@ tr[ai="true"] {
 #currpage {
   color: #de935f;
 }
+
+#displayline {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 10pt;
+}
+
+#displayline > a {
+  cursor: pointer;
+  margin-left: 5px;
+}

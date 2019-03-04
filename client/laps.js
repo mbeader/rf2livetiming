@@ -1,4 +1,6 @@
 var ltable;
+var fline, fdiv;
+var laps = [];
 var classbests = new Object();
 var sortcol = 7;
 
@@ -7,6 +9,10 @@ document.addEventListener('DOMContentLoaded', getTracks, false);
 
 function initLoad(e) {
   ltable = document.getElementById('laps').getElementsByTagName('tbody')[0];
+  fline = document.getElementById('displayline');
+  fdiv = document.getElementById('filters').children[1];
+  fline.children[1].addEventListener('click', showFilters);
+  showFilters();
 }
 
 function getTracks(e) {
@@ -16,13 +22,27 @@ function getTracks(e) {
     if(res.current == null && res.tracks.length == 0) {
       document.title = 'Best Laps';
     } else if(res.current == null) {
+      fillTrackDropdown(res.tracks, res.tracks[0]);
       setTrack(res.tracks[0]);
     } else {
+      fillTrackDropdown(res.tracks, res.current);
       setTrack(res.current);
     }
   });
   req.open('GET', '/tracks');
   req.send();
+}
+
+function fillTrackDropdown(tracks, selected) {
+  for(let i = 0; i < tracks.length; i++) {
+    let e = document.createElement('option');
+    e.value = tracks[i];
+    e.textContent = tracks[i];
+    if(tracks[i] == selected)
+      e.setAttribute('selected', '');
+    document.getElementById('track-select').appendChild(e);
+  }
+  document.getElementById('track-select').addEventListener('change', function() {setTrack(document.getElementById('track-select').value)});
 }
 
 function setTrack(t) {
@@ -35,10 +55,26 @@ function getLaps(t) {
   let req = new XMLHttpRequest();
   req.addEventListener('load', function () {
     let res = JSON.parse(this.responseText);
-    buildLapsTable(laps2List(res));
+    laps = laps2List(res);
+    buildLapsTable(laps);
+    updateDisplayline();
   });
   req.open('GET', '/laptimes?t=' + encodeURIComponent(t));
   req.send();
+}
+
+function updateDisplayline() {
+  fline.getElementsByTagName('span')[0].textContent = 'Displaying ' + ltable.children.length + ' of ' + laps.length + ' laps.';
+}
+
+function showFilters() {
+  if(fdiv.style.display == 'none') {
+    fdiv.style.display = '';
+    fline.children[1].textContent = 'Hide filters';
+  } else {
+    fdiv.style.display = 'none';
+    fline.children[1].textContent = 'Show filters';
+  }
 }
 
 function laps2List(data) {
@@ -123,17 +159,27 @@ function sortLapsTable() {
 }
 
 function buildLapsTable(laps) {
+  while (ltable.firstChild)
+    ltable.removeChild(ltable.lastChild);
+  
   for(let i = 0; i < laps.length; i++)
     ltable.appendChild(createLapsElement(laps[i]));
   sortLapsTable();
 }
 
 function compareLaps(a, b) {
-  let at = Number.parseFloat(a.children[sortcol].textContent);
-  let bt = Number.parseFloat(b.children[sortcol].textContent);
+  let at = processLapTime(a.children[sortcol].textContent);
+  let bt = processLapTime(b.children[sortcol].textContent);
   if (at < bt)
     return -1;
   if (at > bt)
     return 1;
   return 0;
+}
+
+function processLapTime(s) {
+  let temp = s.split(':');
+  if(temp.length == 1)
+    return Number.parseFloat(temp[0]);
+  return 60*Number.parseInt(temp[0])+Number.parseFloat(temp[1]);
 }
