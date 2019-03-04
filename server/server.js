@@ -59,10 +59,9 @@ function handler (req, res) {
       res.end(JSON.stringify(content), 'utf-8');
       break;
     case '/live':
-      sendFile(res, path.join('www', 'live.html'), 'text/html');
-      break;
     case '/map':
-      sendFile(res, path.join('www', 'map.html'), 'text/html');
+    case '/laps':
+      sendFile(res, path.join('www', uri.pathname.substring(1) + '.html'), 'text/html');
       break;
     case '/socket.js':
     case '/common.js':
@@ -70,6 +69,7 @@ function handler (req, res) {
     case '/session.js':
     case '/live.js':
     case '/map.js':
+    case '/laps.js':
       sendFile(res, path.join('client', uri.pathname.substring(1)), 'application/javascript');
       break;
     case '/TomorrowNight.css':
