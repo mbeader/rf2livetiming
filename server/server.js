@@ -64,20 +64,13 @@ function handler (req, res) {
     case '/map':
       sendFile(res, path.join('www', 'map.html'), 'text/html');
       break;
+    case '/socket.js':
     case '/common.js':
-      sendFile(res, path.join('client', 'common.js'), 'application/javascript');
-      break;
     case '/home.js':
-      sendFile(res, path.join('client', 'home.js'), 'application/javascript');
-      break;
     case '/session.js':
-      sendFile(res, path.join('client', 'session.js'), 'application/javascript');
-      break;
     case '/live.js':
-      sendFile(res, path.join('client', 'live.js'), 'application/javascript');
-      break;
     case '/map.js':
-      sendFile(res, path.join('client', 'map.js'), 'application/javascript');
+      sendFile(res, path.join('client', uri.pathname.substring(1)), 'application/javascript');
       break;
     case '/TomorrowNight.css':
       sendFile(res, path.join('www', 'css', uri.pathname), 'text/css');
