@@ -1,6 +1,7 @@
 const http = require('http');
 var server = http.createServer(handler);
 var io = require('socket.io')(server);
+const net = require('net');
 const dgram = require('dgram');
 const fs   = require('fs');
 const path = require('path');
@@ -191,7 +192,7 @@ userver.on('message', (msg, rinfo) => {
       exists = mapbuilder.onUpdate(packet.veh);
     if(temp !== exists)
       io.to('map').emit('map', mapbuilder.getTrackMap());
-    if(typeof state.drivers !== "undefined") {
+    if(typeof state.drivers !== "undefined" && state.drivers !== null) {
       if(!rfactor.compareDriversMaps(drivers, state.drivers)) {
         state.drivers = drivers;
       }
@@ -242,3 +243,21 @@ userver.on('listening', () => {
 });
 
 userver.bind(config.RF2_LISTEN_PORT);
+
+const tserver = net.createServer((s) => {
+  let chunk = '';
+  s.on('data', function(data) {
+    chunk += data;
+  });
+  
+  s.on('end', function() {
+    console.log(chunk.split('\0')[0]);
+  });
+});
+
+tserver.on('error', (err) => {
+  throw err;
+});
+
+tserver.listen(config.RF2_LISTEN_PORT, () => {
+});
