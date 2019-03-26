@@ -6,6 +6,9 @@ createClassColorsConfig();
 fs.mkdir('data', errCheck);
 fs.mkdir(path.join('data', 'hotlaps'), errCheck);
 fs.mkdir(path.join('data', 'maps'), errCheck);
+fs.mkdir(path.join('data', 'results'), errCheck);
+fs.mkdir(path.join('data', 'results', 'xml'), errCheck);
+fs.mkdir(path.join('data', 'results', 'json'), errCheck);
 
 function errCheck(err) {
   if (err instanceof Error && err.code !== "EEXIST")

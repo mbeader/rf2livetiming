@@ -1,9 +1,7 @@
 # rf2livetiming
 config/*
 !config/examples/
-state.json
-hotlaps/
-maps/
+data/*
 pid.json
 *.zip
 

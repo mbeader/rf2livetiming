@@ -12,6 +12,7 @@
   "author": "",
   "license": "GPL-3.0",
   "dependencies": {
+    "pixl-xml": "^1.0.13",
     "socket.io": "^2.2.0"
   }
 }

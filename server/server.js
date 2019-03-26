@@ -8,6 +8,7 @@ const path = require('path');
 const url  = require('url');
 const config = require('../config');
 const rfactor = require('./rfactor');
+const results = require('./results');
 const hotlaps = require('./hotlaps');
 const mapbuilder = require('./mapbuilder');
 const Tracker = require('./tracker');
@@ -251,7 +252,7 @@ const tserver = net.createServer((s) => {
   });
   
   s.on('end', function() {
-    console.log(chunk.split('\0')[0]);
+    results.parseResults(chunk);
   });
 });
 
