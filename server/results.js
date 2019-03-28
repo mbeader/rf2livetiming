@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 var XML = require('pixl-xml');
-const config = require('../config');
 
 function parseResults(data) {
   let d = data.split('\0');
@@ -12,7 +11,6 @@ function parseResults(data) {
   //console.log(JSON.stringify(bestlaps));
   saveResults(filename, xmlstr, JSON.stringify(res));
 }
-
 
 function parseResultsXML(xmlstr) {
   xmlstr = ''.concat(xmlstr.split('<!DOCTYPE rF [\r\n<!ENTITY rFEnt "rFactor Entity">\r\n]>\r\n'));
