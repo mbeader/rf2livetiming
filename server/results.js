@@ -61,9 +61,9 @@ function sessionResults(res) {
 
 function findBestLaps(results) {
   var drivers = [];
-  if(results != undefined) {
+  if(typeof results != 'undefined') {
     for(let i = 0; i < results.Driver.length; i++) {
-      if(results.Driver[i].Lap == undefined)
+      if(typeof results.Driver[i].Lap == 'undefined')
         break;
       let d = new Object();
       d.name = results.Driver[i].Name;
@@ -73,20 +73,35 @@ function findBestLaps(results) {
       for(let j = 0; j < results.Driver[i].Lap.length; j++) {
         if(results.Driver[i].Lap[j]._Data != '--.----') {
           let lapobj = new Object();
-          lapobj.total = results.Driver[i].Lap[j]._Data;
-          if(results.Driver[i].Lap[j].s1 != undefined)
+          lapobj.t = results.Driver[i].Lap[j]._Data;
+          if(typeof results.Driver[i].Lap[j].s1 != 'undefined')
             lapobj.s1 = results.Driver[i].Lap[j].s1;
-          if(results.Driver[i].Lap[j].s2 != undefined)
+          if(typeof results.Driver[i].Lap[j].s2 != 'undefined')
             lapobj.s2 = results.Driver[i].Lap[j].s2;
-          if(results.Driver[i].Lap[j].s3 != undefined)
+          if(typeof results.Driver[i].Lap[j].s3 != 'undefined')
             lapobj.s3 = results.Driver[i].Lap[j].s3;
+          
+          if(typeof results.Driver[i].Lap[j].fuel != 'undefined')
+            lapobj.fuel = results.Driver[i].Lap[j].fuel;
+          if(typeof results.Driver[i].Lap[j].twfl != 'undefined') {
+            lapobj.wear = new Object();
+            lapobj.wear.fl = results.Driver[i].Lap[j].twfl;
+            lapobj.wear.fr = results.Driver[i].Lap[j].twfr;
+            lapobj.wear.rl = results.Driver[i].Lap[j].twrl;
+            lapobj.wear.rr = results.Driver[i].Lap[j].twrr;
+          }
+          if(typeof results.Driver[i].Lap[j].fcompound != 'undefined') {
+            lapobj.compound = new Object();
+            lapobj.compound.f = results.Driver[i].Lap[j].fcompound;
+            lapobj.compound.r = results.Driver[i].Lap[j].rcompound;
+          }
           lapdata.push(lapobj);
         }
       }
       if(lapdata.length > 0) {
         d.bestlap = lapdata[0];
         for(let j = 1; j < lapdata.length; j++)
-          if(Number.parseFloat(lapdata[j].total) < Number.parseFloat(d.bestlap.total))
+          if(Number.parseFloat(lapdata[j].t) < Number.parseFloat(d.bestlap.t))
             d.bestlap = lapdata[j];
         drivers.push(d);
       }
