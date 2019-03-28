@@ -21,6 +21,8 @@ Displays a track map, generated via vehicle position over a good, fast lap, with
 
 * Only tested with 64-bit rFactor 2
 * rF2 is Windows only, this program is currently Windows only
+* Only supports one rF2 server
+* Ensure `"Multi-session Results"` is set to `false` in player.JSON
 
 ## TODO
 

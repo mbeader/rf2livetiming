@@ -8,8 +8,8 @@ function parseResults(data) {
   let filename = d[0].substring(0, d[0].length-4);
   let xmlstr = d[1];
   let res = parseResultsXML(xmlstr);
-  let bestlaps = findBestLaps(sessionResults(res));
-  console.log(JSON.stringify(bestlaps));
+  let bestlaps = findBestLaps(sessionResults(res)[0]);
+  //console.log(JSON.stringify(bestlaps));
   saveResults(filename, xmlstr, JSON.stringify(res));
 }
 
@@ -20,16 +20,46 @@ function parseResultsXML(xmlstr) {
 }
 
 function sessionResults(res) {
+  let a = [];
+  if(typeof res.TestDay != 'undefined')
+    a.push(res.TestDay);
+  
   if(typeof res.Practice1 != 'undefined')
-    return res.Practice1;
-  else if(typeof res.Qualify != 'undefined')
-    return res.Qualify;
-  else if(typeof res.Race != 'undefined')
-    return res.Race;
+    a.push(res.Practice1);
+  if(typeof res.Practice2 != 'undefined')
+    a.push(res.Practice2);
+  if(typeof res.Practice3 != 'undefined')
+    a.push(res.Practice3);
+  if(typeof res.Practice4 != 'undefined')
+    a.push(res.Practice4);
+  
+  if(typeof res.Qualify != 'undefined')
+    a.push(res.Qualify);
+  if(typeof res.Qualify2 != 'undefined')
+    a.push(res.Qualify2);
+  if(typeof res.Qualify3 != 'undefined')
+    a.push(res.Qualify3);
+  if(typeof res.Qualify4 != 'undefined')
+    a.push(res.Qualify4);
+  
+  if(typeof res.Warmup != 'undefined')
+    a.push(res.Warmup);
+  
+  if(typeof res.Race != 'undefined')
+    a.push(res.Race);
+  if(typeof res.Race2 != 'undefined')
+    a.push(res.Race2);
+  if(typeof res.Race3 != 'undefined')
+    a.push(res.Race3);
+  if(typeof res.Race4 != 'undefined')
+    a.push(res.Race4);
+  
+  if(a.length > 1)
+    console.log('Warning: more than one session in result');
+  return a;
 }
 
 function findBestLaps(results) {
-  console.log(results);
   var drivers = [];
   if(results != undefined) {
     for(let i = 0; i < results.Driver.length; i++) {
