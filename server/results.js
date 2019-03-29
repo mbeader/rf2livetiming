@@ -10,6 +10,7 @@ function parseResults(data) {
   let bestlaps = findBestLaps(sessionResults(res)[0]);
   //console.log(JSON.stringify(bestlaps));
   saveResults(filename, xmlstr, JSON.stringify(res));
+  return bestlaps;
 }
 
 function parseResultsXML(xmlstr) {
@@ -59,13 +60,15 @@ function sessionResults(res) {
 
 function findBestLaps(results) {
   var drivers = [];
-  if(typeof results != 'undefined') {
+  if(typeof results != 'undefined' && typeof results.Driver != 'undefined') {
+    let basetime = Number.parseInt(results.DateTime);
     for(let i = 0; i < results.Driver.length; i++) {
       if(typeof results.Driver[i].Lap == 'undefined')
         break;
       let d = new Object();
       d.name = results.Driver[i].Name;
       d.veh = results.Driver[i].VehName;
+      d.vehclass = results.Driver[i].CarClass;
       d.laps = Number.parseInt(results.Driver[i].Laps);
       let lapdata = [];
       for(let j = 0; j < results.Driver[i].Lap.length; j++) {
@@ -80,19 +83,23 @@ function findBestLaps(results) {
             lapobj.s3 = results.Driver[i].Lap[j].s3;
           
           if(typeof results.Driver[i].Lap[j].fuel != 'undefined')
-            lapobj.fuel = results.Driver[i].Lap[j].fuel;
+            lapobj.fuel = Number.parseFloat(results.Driver[i].Lap[j].fuel);
           if(typeof results.Driver[i].Lap[j].twfl != 'undefined') {
             lapobj.wear = new Object();
-            lapobj.wear.fl = results.Driver[i].Lap[j].twfl;
-            lapobj.wear.fr = results.Driver[i].Lap[j].twfr;
-            lapobj.wear.rl = results.Driver[i].Lap[j].twrl;
-            lapobj.wear.rr = results.Driver[i].Lap[j].twrr;
+            lapobj.wear.fl = Number.parseFloat(results.Driver[i].Lap[j].twfl);
+            lapobj.wear.fr = Number.parseFloat(results.Driver[i].Lap[j].twfr);
+            lapobj.wear.rl = Number.parseFloat(results.Driver[i].Lap[j].twrl);
+            lapobj.wear.rr = Number.parseFloat(results.Driver[i].Lap[j].twrr);
           }
           if(typeof results.Driver[i].Lap[j].fcompound != 'undefined') {
             lapobj.compound = new Object();
             lapobj.compound.f = results.Driver[i].Lap[j].fcompound;
             lapobj.compound.r = results.Driver[i].Lap[j].rcompound;
           }
+          
+          if(typeof results.Driver[i].Lap[j].et != 'undefined')
+            lapobj.timestamp = basetime + Math.round(results.Driver[i].Lap[j].et);
+          lapobj.verified = 2;
           lapdata.push(lapobj);
         }
       }

@@ -252,7 +252,9 @@ const tserver = net.createServer((s) => {
   });
   
   s.on('end', function() {
-    results.parseResults(chunk);
+    let bestlaps = results.parseResults(chunk);
+    if(bestlaps.length > 0)
+      hotlaps.verify(bestlaps);
   });
 });
 

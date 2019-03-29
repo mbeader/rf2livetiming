@@ -70,6 +70,7 @@ function updateDB(lap, name, veh) {
   if(lap.s1 <= 0 || lap.s2 <= 0 || lap.s3 <= 0 || lap.t <= 0)
     return;
   lap.timestamp = new Date().getTime();
+  lap.verified = 0; //0 = pending verification, 1 = unverified, 2 = verified
   if(typeof db.data[name] === "undefined") {
     db.data[name] = new Object();
     let c = new Object();
@@ -122,7 +123,7 @@ function updateDB(lap, name, veh) {
     }
     if(lap.t < oldlap.t) {
       db.data[name][veh.vehclass][veh.name].lap = lap;
-      new Date().getTime()/1000|0
+      new Date().getTime()/1000|0;
       dirty = true;
     }
   }
@@ -191,9 +192,47 @@ function getTracks() {
   return t;
 }
 
+function verify(laps) {
+  for(let i = 0; i < laps.length; i++) {
+    if(typeof db.data[laps[i].name] !== "undefined") {
+      if(typeof db.data[laps[i].name][laps[i].vehclass] !== "undefined") {
+        if(typeof db.data[laps[i].name][laps[i].vehclass][laps[i].veh] !== "undefined") {
+          if(db.data[laps[i].name][laps[i].vehclass][laps[i].veh].lap.verified == 0) {
+            console.log('Starting ' + laps[i].name);
+            if(!testTime(db.data[laps[i].name][laps[i].vehclass][laps[i].veh].lap.s1, laps[i].bestlap.s1))
+              console.log('failed s1');
+            if(!testTime(db.data[laps[i].name][laps[i].vehclass][laps[i].veh].lap.s2, laps[i].bestlap.s2))
+              console.log('failed s2');
+            if(!testTime(db.data[laps[i].name][laps[i].vehclass][laps[i].veh].lap.s3, laps[i].bestlap.s3))
+              console.log('failed s3');
+            if(!testTime(db.data[laps[i].name][laps[i].vehclass][laps[i].veh].lap.t, laps[i].bestlap.t))
+              console.log('failed t');
+          }
+        }
+      }
+    }
+  }
+}
+
+function condemnUnverified() {}
+
+function testTime(live, result) {
+  let templ = live.toFixed(3);
+  let tempr = Number.parseFloat(result.substring(0, result.length-1));
+  if(templ == tempr.toFixed(3))
+    return true;
+  console.log(templ + ' ' + tempr.toFixed(3));
+  if(templ == (tempr+.001).toFixed(3))
+    return true;
+  if(templ == (tempr-.001).toFixed(3))
+    return true;
+  return false;
+}
+
 module.exports = {
   onUpdate: onUpdate,
   getData: getData,
   getTrack: getTrack,
-  getTracks: getTracks
+  getTracks: getTracks,
+  verify: verify
 }
