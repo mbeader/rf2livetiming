@@ -14,7 +14,7 @@ socket.on('hotlap', function (laps) {
   updateHotlapsTable(laps);
   sortHotlapsTable();
   for(let i = 0; i < newupdates.length; i++) {
-    if(Number.parseFloat(newupdates[i].children[7].textContent) == hclassbests[newupdates[i].children[3].textContent]) {
+    if(Number.parseFloat(newupdates[i].children[7].getAttribute('data-t')) == hclassbests[newupdates[i].children[3].textContent]) {
       newupdates[i].classList.add('cbest');
       setTimeout(function(e) {
         e.classList.remove('cbest');
@@ -99,8 +99,8 @@ function hotlaps2List(data) {
 }
 
 function compareHotlaps(a, b) {
-  let at = Number.parseFloat(a.children[7].textContent);
-  let bt = Number.parseFloat(b.children[7].textContent);
+  let at = Number.parseFloat(a.children[7].getAttribute('data-t'));
+  let bt = Number.parseFloat(b.children[7].getAttribute('data-t'));
   if (at < bt)
     return -1;
   if (at > bt)
@@ -123,11 +123,12 @@ function updateHotlapsTable(laps) {
   for(let i = 0; i < laps.length; i++) {
     for(let j = 0; j < hltable.children.length; j++) {
       if(hltable.children[j].children[1].textContent == laps[i].name && hltable.children[j].children[3].textContent == laps[i].vehclass && hltable.children[j].children[2].textContent == laps[i].veh) {
-        if(Number.parseFloat(hltable.children[j].children[7].textContent) > laps[i].bestlap.t) {
+        if(Number.parseFloat(hltable.children[j].children[7].getAttribute('data-t')) > laps[i].bestlap.t) {
           hltable.children[j].children[4].textContent = secToTime(laps[i].bestlap.s1);
           hltable.children[j].children[5].textContent = secToTime(laps[i].bestlap.s2);
           hltable.children[j].children[6].textContent = secToTime(laps[i].bestlap.s3);
           hltable.children[j].children[7].textContent = secToTime(laps[i].bestlap.t);
+		hltable.children[j].children[7].setAttribute('data-t', laps[i].bestlap.t);
           newupdates.push(hltable.children[j]);
         }
         found = true;
@@ -162,7 +163,7 @@ function createHotlapsElement(lap) {
     t += '<td class="time">-</td>';
   else
     t += '<td class="time">' + secToTime(lap.bestlap.s3) + '</td>';
-  t += '<td class="time">' + secToTime(lap.bestlap.t) + '</td>';
+  t += '<td class="time" data-t="' + lap.bestlap.t +'">' + secToTime(lap.bestlap.t) + '</td>';
   e.innerHTML = t;
   if(lap.ai)
     e.setAttribute('ai', 'true');
@@ -184,8 +185,8 @@ function sortHotlapsTable() {
     else
       list[i].classList.remove('even');
     let c = list[i].children[3].textContent;
-    if(typeof hclassbests[c] === "undefined" || hclassbests[c] > Number.parseFloat(list[i].children[7].textContent))
-      hclassbests[c] = Number.parseFloat(list[i].children[7].textContent);
+    if(typeof hclassbests[c] === "undefined" || hclassbests[c] > Number.parseFloat(list[i].children[7].getAttribute('data-t')))
+      hclassbests[c] = Number.parseFloat(list[i].children[7].getAttribute('data-t'));
     hltable.appendChild(list[i]);
   }
 }
