@@ -1,6 +1,12 @@
 const http = require('http');
 var server = http.createServer(handler);
 var io = require('socket.io')(server);
+const log4js = require('log4js');
+log4js.configure({
+  appenders: { cheese: { type: 'file', filename: 'error.log' } },
+  categories: { default: { appenders: ['cheese'], level: 'error' } }
+});
+const log = log4js.getLogger('cheese');
 const dgram = require('dgram');
 const fs   = require('fs');
 const path = require('path');
@@ -181,9 +187,15 @@ userver.on('message', (msg, rinfo) => {
   let drivers = rfactor.getDriversMap(packet.veh);
   if(typeof drivers !== "undefined") {
     io.to('map').emit('veh', rfactor.getVehPos(packet.veh));
-    let bests = sessionbests.onUpdate(packet.veh);
-    if(bests != null) {
-      io.to('live').emit('bests', bests);
+    try {
+	    let bests = sessionbests.onUpdate(packet.veh);
+	    if(bests != null) {
+		 io.to('live').emit('bests', bests);
+	    }
+    } catch(e) {
+	    log.error(e + ', packet: ' + JSON.stringify(packet));
+	    console.log('crashing this webapp, with no survivors');
+	    log4js.shutdown(function() { throw e; });
     }
     io.to('live').emit('vehs', packet.veh);
     let temp = exists;

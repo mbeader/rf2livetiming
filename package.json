@@ -12,6 +12,7 @@
   "author": "",
   "license": "GPL-3.0",
   "dependencies": {
+    "log4js": "^6.3.0",
     "socket.io": "^2.2.0"
   }
 }
