@@ -8,7 +8,13 @@ var pendinglaps = new Object();
 var state = new Object();
 
 try {
-  state = JSON.parse(fs.readFileSync(path.join('data', 'state.json')));
+  let f = fs.readFileSync(path.join('data', 'state.json'));
+  if(f.length == 0) {
+    console.log('Hotlaps state was empty');
+    state = new Object();
+    state.lasttrack = '';
+  } else
+    state = JSON.parse(fs.readFileSync(path.join('data', 'state.json')));
 } catch(err) {
   if (err.code === 'ENOENT') {
     console.log('No hotlaps state found');
