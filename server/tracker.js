@@ -58,14 +58,12 @@ class BestsTracker {
   }
   
   addVeh(driver, vehclass, veh) {
-    if(typeof this.vehs[driver] === 'undefined') {
+    if(typeof this.vehs[driver] === 'undefined')
       this.vehs[driver] = new Object();
-      if(typeof this.vehs[driver][vehclass] === 'undefined') {
-        this.vehs[driver][vehclass] = new Object();
-        if(typeof this.vehs[driver][vehclass][veh] === 'undefined')
-          this.vehs[driver][vehclass][veh] = this.newBest();
-      }
-    }
+    if(typeof this.vehs[driver][vehclass] === 'undefined')
+      this.vehs[driver][vehclass] = new Object();
+    if(typeof this.vehs[driver][vehclass][veh] === 'undefined')
+      this.vehs[driver][vehclass][veh] = this.newBest();
   }
   
   addClass(classname) {
