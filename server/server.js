@@ -3,10 +3,10 @@ var server = http.createServer(handler);
 var io = require('socket.io')(server);
 const log4js = require('log4js');
 log4js.configure({
-  appenders: { cheese: { type: 'file', filename: 'error.log' } },
-  categories: { default: { appenders: ['cheese'], level: 'error' } }
+  appenders: { rf2lt: { type: 'file', filename: 'error.log' } },
+  categories: { default: { appenders: ['rf2lt'], level: 'error' } }
 });
-const log = log4js.getLogger('cheese');
+const log = log4js.getLogger('rf2lt');
 const dgram = require('dgram');
 const fs   = require('fs');
 const path = require('path');
@@ -152,7 +152,14 @@ userver.on('message', (msg, rinfo) => {
     return;
   if(typeof timer !== "undefined")
     clearTimeout(timer);
-  let packet = rfactor.parseUDPPacket(msg);
+  let packet;
+  try {
+    packet = rfactor.parseUDPPacket(msg);
+  } catch(e) {
+    log.error(e + ', packet: ' + msg.toString('hex'));
+    console.log('crashing this webapp, with no survivors');
+    log4js.shutdown(function() { throw e; });
+  }
   if(typeof packet === "undefined")
     return;
   rf2server = packet.server;

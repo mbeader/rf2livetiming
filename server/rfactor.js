@@ -5,6 +5,7 @@ var xmlchars = ['&', '<', '>', '"', '\''];
 function parseUDPPacket(msg)  {
   let p = new Object();
   //console.log(msg.toString('hex'));
+  // 1-rf2 1-rf1
   p.version = msg.readUInt8(0);
   p.pnum = msg.readUInt8(1);
   p.sequence = msg.readUInt16LE(2);
@@ -54,9 +55,15 @@ function parseScoringPacket(msg, p)  {
     default: p.sessionname = "Unknown";
   }
   pointer += 4;
-  p.currtime = msg.readDoubleLE(pointer);
+  if(p.version == 2)
+    p.currtime = msg.readFloatLE(pointer);
+  else
+    p.currtime = msg.readDoubleLE(pointer);
   pointer += 8;
-  p.endtime = msg.readDoubleLE(pointer);
+  if(p.version == 2)
+    p.endtime = msg.readFloatLE(pointer);
+  else
+    p.endtime = msg.readDoubleLE(pointer);
   if(p.endtime == -2147483648)
     p.endtime = null;
   pointer += 8;
@@ -64,7 +71,10 @@ function parseScoringPacket(msg, p)  {
   if(p.maxlaps == 2147483647)
     p.maxlaps = null;
   pointer += 4;
-  p.lapdist = msg.readDoubleLE(pointer);
+  if(p.version == 2)
+    p.lapdist = msg.readFloatLE(pointer);
+  else
+    p.lapdist = msg.readDoubleLE(pointer);
   pointer += 8;
   p.numveh = msg.readUInt32LE(pointer);
   pointer += 4;
@@ -122,16 +132,31 @@ function parseScoringPacket(msg, p)  {
   p.veh = [];
   for(let i = 0; i < p.numveh; i++) {
     let veh = new Object();
-    veh.posx = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.posx = msg.readFloatLE(pointer);
+    else
+      veh.posx = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.posy = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.posy = msg.readFloatLE(pointer);
+    else
+      veh.posy = msg.readDoubleLE(pointer);
     pointer += 8;
     veh.place = msg.readUInt8(pointer++);
-    veh.lapdist = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.lapdist = msg.readFloatLE(pointer);
+    else
+      veh.lapdist = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.lateralpos = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.lateralpos = msg.readFloatLE(pointer);
+    else
+      veh.lateralpos = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.speed = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.speed = msg.readFloatLE(pointer);
+    else
+      veh.speed = msg.readDoubleLE(pointer);
     pointer += 8;
     let j = 0;
     for(j = 0; j < pointer + 64; j++)
@@ -151,27 +176,57 @@ function parseScoringPacket(msg, p)  {
     pointer = pointer + j + 1;
     veh.laps = msg.readUInt16LE(pointer);
     pointer += 2;
-    veh.bests1 = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.bests1 = msg.readFloatLE(pointer);
+    else
+      veh.bests1 = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.bests2 = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.bests2 = msg.readFloatLE(pointer);
+    else
+      veh.bests2 = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.bestlap = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.bestlap = msg.readFloatLE(pointer);
+    else
+      veh.bestlap = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.lasts1 = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.lasts1 = msg.readFloatLE(pointer);
+    else
+      veh.lasts1 = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.lasts2 = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.lasts2 = msg.readFloatLE(pointer);
+    else
+      veh.lasts2 = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.lastlap = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.lastlap = msg.readFloatLE(pointer);
+    else
+      veh.lastlap = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.currs1 = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.currs1 = msg.readFloatLE(pointer);
+    else
+      veh.currs1 = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.currs2 = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.currs2 = msg.readFloatLE(pointer);
+    else
+      veh.currs2 = msg.readDoubleLE(pointer);
     pointer += 8;
-    veh.timebehindleader = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.timebehindleader = msg.readFloatLE(pointer);
+    else
+      veh.timebehindleader = msg.readDoubleLE(pointer);
     pointer += 8;
     veh.lapsbehindleader = msg.readUInt32LE(pointer);
     pointer += 4;
-    veh.timebehindnext = msg.readDoubleLE(pointer);
+    if(p.version == 2)
+      veh.timebehindnext = msg.readFloatLE(pointer);
+    else
+      veh.timebehindnext = msg.readDoubleLE(pointer);
     pointer += 8;
     veh.lapsbehindnext = msg.readUInt32LE(pointer);
     pointer += 4;
