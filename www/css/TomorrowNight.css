@@ -1,67 +1,67 @@
 body {
-  background-color: #1d1f21;
-  color: #c5c8c6;
-  font-size: 10pt;
-  font-family: arial,helvetica,sans-serif;
-  margin: 8px 0px;
+	background-color: #1d1f21;
+	color: #c5c8c6;
+	font-size: 10pt;
+	font-family: arial,helvetica,sans-serif;
+	margin: 8px 0px;
 }
 
 #session, #track {
-  text-align: center;
-  color: #c5c8c6;
-  font-size: 14pt;
-  font-weight: bold;
+	text-align: center;
+	color: #c5c8c6;
+	font-size: 14pt;
+	font-weight: bold;
 }
 
 #message {
-  text-align: center;
+	text-align: center;
 }
 
 #message > a {
-  color: red;
-  font-weight: bold;
+	color: red;
+	font-weight: bold;
 }
 
 .main-wrapper {
-  text-align: center;
+	text-align: center;
 }
 
 #left-column {
-  float: left;
+	float: left;
 }
 
 #right-column {
-  float: right;
+	float: right;
 }
 
 .column-wrapper {
-  display: inline-block;
-  text-align: left;
-  vertical-align: top;
-  width: 49.5%;
-  margin-bottom: 15px;
+	display: inline-block;
+	text-align: left;
+	vertical-align: top;
+	width: 49.5%;
+	margin-bottom: 15px;
 }
 
 #hotlaps, #live, #live-timing {
-  table-layout: fixed;
+	table-layout: fixed;
 }
 
 #hotlaps td:nth-child(3), #live td:nth-child(3), #live-timing td:nth-child(3) {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 #hotlaps td:nth-child(2), #live td:nth-child(2), #live-timing td:nth-child(2) {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 #hotlaps td:nth-child(4), #live td:nth-child(4), #live-timing td:nth-child(4) {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 #hotlaps th:nth-child(1) {width: 2.5%;}
@@ -101,204 +101,204 @@ body {
 #live-timing th:nth-child(18) {width: 2.25%;}
 
 table {
-  width: 100%;
-  border: 1px solid #282a2e;
+	width: 100%;
+	border: 1px solid #282a2e;
 }
 
 table caption {
-  caption-side: top;
-  text-align: left;
-  padding-left: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 4px;
+	caption-side: top;
+	text-align: left;
+	padding-left: 4px;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 4px;
 }
 
 th {
-  text-align: left;
-  color: #b294bb;
+	text-align: left;
+	color: #b294bb;
 }
 
 td, th {
-  padding-left: 4px;
-  padding-right: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
 }
 
 .time {
-  text-align: right;
+	text-align: right;
 }
 
 #banner {
-  text-align: center;
+	text-align: center;
 }
 
 .even {
-  background-color: #282a2e;
+	background-color: #282a2e;
 }
 
 .pbest {
-  background-color: #757c36;
+	background-color: #757c36;
 }
 
 .cbest {
-  background-color: #72507c;
+	background-color: #72507c;
 }
 
 main {
-  margin: auto 1%;
+	margin: auto 1%;
 }
 
 header {
-  border-bottom: 4px solid #282a2e;
-  padding-bottom: 8px;
+	border-bottom: 4px solid #282a2e;
+	padding-bottom: 8px;
 }
 
 header > * {
-  margin: auto 1%;
+	margin: auto 1%;
 }
 
 header h1 {
-  display: inline;
+	display: inline;
 }
 
 nav {
-  float: right;
-  vertical-align: middle;
-  line-height: 31px;
+	float: right;
+	vertical-align: middle;
+	line-height: 31px;
 }
 
 nav a {
-  margin-left: 20px;
-  font-size: 16pt;
+	margin-left: 20px;
+	font-size: 16pt;
 }
 
 a {
-  color: #81a2be;
-  text-decoration: none;
+	color: #81a2be;
+	text-decoration: none;
 }
 
 a:hover {
-  color: #de935f;
+	color: #de935f;
 }
 
 #info {
-  margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 #info > div {
-  /*text-align: center;*/
-  font-size: 16px;
+	/*text-align: center;*/
+	font-size: 16px;
 }
 
 #session-bar {
-  display: flex;
+	display: flex;
 }
 
 .box:first-child > a {
-  margin-right: auto;
+	margin-right: auto;
 }
 
 .box:last-child > span {
-  margin-left: auto;
+	margin-left: auto;
 }
 
 .box {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+	flex: 1;
+	display: flex;
+	justify-content: center;
 }
 
 #sectors:before {
-  content: "—";
-  padding-left: 5px;
-  padding-right: 5px;
+	content: "—";
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 #sectors span:first-child:before {
-  content: "";
+	content: "";
 }
 
 #sectors span:before {
-  content: " ";
+	content: " ";
 }
 
 .yellow {
-  background-color: #f0c674;
-  color: #1d1f21;
+	background-color: #f0c674;
+	color: #1d1f21;
 }
 
 .yellow:before {
-  background-color: #1d1f21;
-  color: #c5c8c6;
+	background-color: #1d1f21;
+	color: #c5c8c6;
 }
 
 tr[ai="true"] {
-  color: #969896;
+	color: #969896;
 }
 
 #messages {
-  /*background-color: #282a2e;*/
-  border: 1px solid #282a2e;
-  height: 10em;
-  overflow: auto;
+	/*background-color: #282a2e;*/
+	border: 1px solid #282a2e;
+	height: 10em;
+	overflow: auto;
 }
 
 #messages p {
-  margin: 2px auto;
-  padding-left: 4px;
+	margin: 2px auto;
+	padding-left: 4px;
 }
 
 .label {
-  padding-left: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 0px;
-  margin-bottom: 4px;
+	padding-left: 4px;
+	font-size: 16px;
+	font-weight: bold;
+	margin-top: 0px;
+	margin-bottom: 4px;
 }
 
 #map {
-  border: 1px solid #282a2e;
+	border: 1px solid #282a2e;
 }
 
 #map-wrapper {
-  text-align: center;
+	text-align: center;
 }
 
 #map-wrapper p {
-  text-align: left;
+	text-align: left;
 }
 
 #map-wrapper, #live-wrapper {
-  margin-bottom: 15px;
+	margin-bottom: 15px;
 }
 
 .lapset:before {
-  content: " (";
+	content: " (";
 }
 
 .lapset:after {
-  content: ")";
+	content: ")";
 }
 
 .pbtime {
-  color: #b5bd68;
+	color: #b5bd68;
 }
 
 .cbtime {
-  color: #b294bb;
+	color: #b294bb;
 }
 
 #currpage {
-  color: #de935f;
+	color: #de935f;
 }
 
 #displayline {
-  text-align: center;
-  margin-bottom: 15px;
-  font-size: 10pt;
+	text-align: center;
+	margin-bottom: 15px;
+	font-size: 10pt;
 }
 
 #displayline > a {
-  cursor: pointer;
-  margin-left: 5px;
+	cursor: pointer;
+	margin-left: 5px;
 }
