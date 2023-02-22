@@ -227,9 +227,17 @@ userver.on('message', (msg, rinfo) => {
   if(typeof events.score[0] === "undefined")
     ;
   else {
-    let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, events.score);
-    if(typeof updates !== "undefined") {
-      io.to('hotlaps').emit('hotlap', updates);
+	try {
+	  let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, events.score);
+	  if(typeof updates !== "undefined") {
+	    io.to('hotlaps').emit('hotlap', updates);
+	  }
+    } catch(e) {
+		log.error(JSON.stringify(drivers));
+		log.error(JSON.stringify(events.score));
+	    log.error(e + ', packet: ' + JSON.stringify(packet));
+	    console.log('crashing this webapp, with no survivors');
+	    log4js.shutdown(function() { throw e; });
     }
   }
   if(events.chat.length > 0)
@@ -252,7 +260,7 @@ userver.on('message', (msg, rinfo) => {
     io.to('live').emit('session', state);
     io.to('live').emit('bests', sessionbests.bests);
     lock = null;
-  }, 10000);
+  }, 100000);
 });
 
 userver.on('listening', () => {

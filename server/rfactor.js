@@ -5,7 +5,7 @@ var xmlchars = ['&', '<', '>', '"', '\''];
 function parseUDPPacket(msg)  {
   let p = new Object();
   //console.log(msg.toString('hex'));
-  // 1-rf2 1-rf1
+  // 1-rf2 2-rf1
   p.version = msg.readUInt8(0);
   p.pnum = msg.readUInt8(1);
   p.sequence = msg.readUInt16LE(2);
@@ -266,6 +266,8 @@ function parseEventStream(res) {
 
 function score2Obj(xml) {
   let e = new Object();
+  for(let i = 0; i < xmlescapes.length; i++)
+    xml = xml.replace(new RegExp(xmlescapes[i], 'gi'), xmlchars[i]);
   if(xml.startsWith('Checkered')) {
   } else {
     e.type = 'sector';
