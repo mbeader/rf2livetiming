@@ -1,18 +1,17 @@
 {
   "name": "rf2livetiming",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "rFactor 2 server-side live timing",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js",
-    "start": "START node index.js",
+    "start": "node index.js",
     "stop": "node scripts\\kill.js",
     "postinstall": "node scripts\\setup.js"
   },
   "author": "",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0",
   "dependencies": {
-    "log4js": "^6.3.0",
-    "socket.io": "^2.2.0"
+    "log4js": "^6.8.0",
+    "socket.io": "^4.6.1"
   }
 }
