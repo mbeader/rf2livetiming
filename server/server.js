@@ -4,7 +4,7 @@ var io = require('socket.io')(server);
 const log4js = require('log4js');
 log4js.configure({
 	appenders: { rf2lt: { type: 'file', filename: 'error.log' } },
-	categories: { default: { appenders: ['rf2lt'], level: 'error' } }
+	categories: { default: { appenders: ['rf2lt'], level: 'debug' } }
 });
 const log = log4js.getLogger('rf2lt');
 const dgram = require('dgram');
@@ -259,6 +259,8 @@ userver.on('message', (msg, rinfo) => {
 		sessionbests = new Tracker();
 		io.to('live').emit('session', state);
 		io.to('live').emit('bests', sessionbests.bests);
+		io.to('live').emit('vehs', new Object());
+		io.to('map').emit('veh', new Object());
 		lock = null;
 	}, 100000);
 });
