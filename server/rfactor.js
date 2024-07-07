@@ -414,11 +414,23 @@ function getVehPos(veh) {
 	return pos;
 }
 
+function randomGrid(drivers) {
+	let remaining = new Array();
+	for(let driver in drivers)
+		remaining.push(driver);
+	let count = remaining.length;
+	let res = '';
+	for(let i = 1; i <= count; i++)
+		res += '/editgrid ' + i + ' ' + remaining.splice(Math.floor(Math.random()*remaining.length), 1)[0] + '\r\n';
+	return res;
+}
+
 const state = new PacketState();
 module.exports = {
 	parseUDPPacket: parseUDPPacket,
 	parseEventStream: parseEventStream,
 	getDriversMap: getDriversMap,
 	compareDriversMaps: compareDriversMaps,
-	getVehPos: getVehPos
+	getVehPos: getVehPos,
+	randomGrid: randomGrid
 }

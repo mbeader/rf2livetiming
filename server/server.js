@@ -80,6 +80,7 @@ function handler (req, res) {
 		case '/live':
 		case '/map':
 		case '/laps':
+		case '/tools':
 			sendFile(res, path.join('www', uri.pathname.substring(1) + '.html'), 'text/html');
 			break;
 		case '/socket.js':
@@ -95,6 +96,11 @@ function handler (req, res) {
 		case '/tomorrow.css':
 		case '/tomorrownight.css':
 			sendFile(res, path.join('www', 'css', uri.pathname), 'text/css');
+			break;
+		case '/random.ini':
+			res.writeHead(200, {'Content-type': 'text/plain'});
+			content = rfactor.randomGrid(state.drivers);
+			res.end(content, 'utf-8');
 			break;
 		default:
 			send404(res);
