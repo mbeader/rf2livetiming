@@ -1,6 +1,7 @@
 const config = require('../config');
 const xmlescapes = ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;']
 const xmlchars = ['&', '<', '>', '"', '\''];
+const games = { 1: 365960, 2: 339790, 3: 431600 };
 
 class PacketState {
 	current;
@@ -130,6 +131,7 @@ function parseScoringPacket(msg, p)	{
 	}
 	
 	p.server = new Object();
+	p.server.game = games[p.version];
 	p.server.ip = msg.readUInt32LE(pointer);
 	pointer += 4;
 	p.server.port = msg.readUInt16LE(pointer);

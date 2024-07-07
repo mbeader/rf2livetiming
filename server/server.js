@@ -29,7 +29,7 @@ state.phase = new Object();
 state.phase.name = '';
 state.phase.yellow = '';
 state.phase.sectors = [0,0,0];
-var rf2server = {name: null, ip: null, port: null};
+var rf2server = {name: null, ip: null, port: null, game: null};
 var timer;
 var exists = false;
 var sessionbests = new Tracker();
@@ -62,6 +62,7 @@ function handler (req, res) {
 			content.name = rf2server.name;
 			content.ip = config.RF2_PUBLIC_ADDR;
 			content.port = rf2server.port;
+			content.game = rf2server.game;
 			res.end(JSON.stringify(content), 'utf-8');
 			break;
 		case '/tracks':
@@ -257,7 +258,7 @@ userver.on('message', (msg, rinfo) => {
 		state.phase.name = '';
 		state.phase.yellow = '';
 		state.phase.sectors = [0,0,0];
-		rf2server = {name: null, ip: null, port: null};
+		rf2server = {name: null, ip: null, port: null, game: null};
 		sessionbests = new Tracker();
 		io.to('live').emit('session', state);
 		io.to('live').emit('bests', sessionbests.bests);

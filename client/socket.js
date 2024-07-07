@@ -32,10 +32,10 @@ function getInfo(e) {
 			document.getElementById('heading').textContent = res.name;
 		}
 		if(document.location.pathname != '/map') {
-			if(res.ip != null && res.port != null)
-				document.getElementById('join').href = 'steam://run/365960//+connect ' + res.ip + ':' + res.port;
+			if(res.ip && res.port && res.game)
+				document.getElementById('join').href = 'steam://run/' + res.game + '//+connect ' + res.ip + ':' + res.port;
 			else
-				document.getElementById('join').href = '';
+				document.getElementById('join').removeAttribute('href');
 		}
 	});
 	req.open('GET', '/info');
