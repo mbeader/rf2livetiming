@@ -90,7 +90,9 @@ function handler (req, res) {
 		case '/laps.js':
 			sendFile(res, path.join('client', uri.pathname.substring(1)), 'application/javascript');
 			break;
-		case '/TomorrowNight.css':
+		case '/main.css':
+		case '/tomorrow.css':
+		case '/tomorrownight.css':
 			sendFile(res, path.join('www', 'css', uri.pathname), 'text/css');
 			break;
 		default:

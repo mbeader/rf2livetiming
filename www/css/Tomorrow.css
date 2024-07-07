@@ -1,79 +1,13 @@
-body {
-	background-color: #ffffff;
-	color: #4d4d4c;
-	font-size: 10pt;
-	font-family: arial,helvetica,sans-serif;
-	margin: auto 1%;
-}
-
-#info {
-	text-align: center;
-	color: #4d4d4c;
-	font-size: 14pt;
-	font-weight: bold;
-}
-
-#message {
-	text-align: center;
-}
-
-#message > a {
-	color: red;
-	font-weight: bold;
-}
-
-.main-wrapper {
-	text-align: center;
-}
-
-.table-wrapper {
-	display: inline-block;
-	text-align: left;
-	margin: auto 10px;
-	vertical-align: top;
-}
-
-table {
-	width: 100%;
-	border: 1px solid #efefef;
-	margin-bottom: 15px;
-}
-
-table caption {
-	caption-side: top;
-	text-align: left;
-	padding-left: 4px;
-	font-size: 16px;
-	font-weight: bold;
-	margin-bottom: 4px;
-}
-
-th {
-	text-align: left;
-	color: #8959a8;
-}
-
-td, th {
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-.time {
-	text-align: right;
-}
-
-#banner {
-	text-align: center;
-}
-
-.even {
-	background-color: #efefef;
-}
-
-.pbest {
-	background-color: #b5bd68;
-}
-
-.cbest {
-	background-color: #b294bb;
+:root {
+	--main-bg: #ffffff; /* background */
+	--main: #4d4d4c; /* foreground */
+	--table-even: #efefef; /* current line */
+	--table-pbest: #c0cf80; /* green (less significant) */
+	--table-cbest: #bf9bd6; /* purple (less significant) */
+	--anchor: #4271ae; /* blue */
+	--caution: #eab700; /* yellow */
+	--table-ai: #8e908c; /* comment */
+	--pbest: #718c00; /* green */
+	--cbest: #8959a8; /* purple */
+	--selected: #f5871f; /* orange */
 }
