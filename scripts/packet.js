@@ -1,5 +1,6 @@
 const rfactor = require('../server/rfactor');
 const MAX_PACKET_LEN = 32768;
+let sequence = 0;
 
 class Scoring {
 	version; // uint8
@@ -36,11 +37,11 @@ class Scoring {
 	}
 	
 	serialize() {
-		let packets = new PacketCollection(this.version);
+		let packets = new PacketCollection(this.version, this.type);
 		//packets.addInt(this.version, 1);
 		//packets.addInt(this.pnum, 1);
 		//packets.addInt(this.sequence, 2);
-		packets.addInt(this.type, 1);
+		//packets.addInt(this.type, 1);
 		packets.addInt(this.server.ip, 4);
 		packets.addInt(this.server.port, 2);
 		packets.addString(this.server.name, 32);
@@ -90,7 +91,9 @@ class Scoring {
 			packets.addInt(veh.sector, 1);
 			packets.addInt(veh.status, 1);
 		}
+		packets.addInt(this.results ? this.results.length : 0, 4);
 		packets.addString(this.results);
+		packets.finalize();
 		return packets;
 	}
 
@@ -148,11 +151,13 @@ class PacketCollection {
 	packets;
 	version;
 	sequence;
+	type;
 
-	constructor(version) {
+	constructor(version, type) {
 		this.packets = new Array();
 		this.version = version;
-		this.sequence = 0;
+		this.sequence = ++sequence;
+		this.type = type;
 	}
 
 	addInt(data, size) {
@@ -178,15 +183,19 @@ class PacketCollection {
 	add(data, size, type) {
 		let packet;
 		if(this.packets.length == 0) {
-			this.sequence++;
-			packet = new Packet(this.version, this.packets.length, this.sequence);
+			packet = new Packet(this.version, this.packets.length, this.sequence, this.type);
 			this.packets.push(packet);
-		} else if(this.packets.length+size > MAX_PACKET_LEN) {
-			packet = new Packet(this.version, this.packets.length, this.sequence);
+		} else if(this.packets[this.packets.length-1].length+size > MAX_PACKET_LEN-1) {
+			this.packets[this.packets.length-1].append(0, 1, 'int');
+			packet = new Packet(this.version, this.packets.length, this.sequence, this.type);
 			this.packets.push(packet);
 		} else
 			packet = this.packets[this.packets.length-1];
 		packet.append(data, size, type);
+	}
+
+	finalize() {
+		this.addInt(1, 1);
 	}
 }
 
@@ -194,12 +203,13 @@ class Packet {
 	buffer;
 	length;
 
-	constructor(version, packet, sequence) {
+	constructor(version, packet, sequence, type) {
 		this.buffer = Buffer.alloc(MAX_PACKET_LEN, 0);
 		this.length = 0;
 		this.append(version, 1, 'int');
 		this.append(packet, 1, 'int');
 		this.append(sequence, 2, 'int');
+		this.append(type, 1, 'int');
 	}
 
 	append(data, size, type) {

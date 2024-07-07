@@ -1,15 +1,113 @@
 const config = require('../config');
-var xmlescapes = ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;']
-var xmlchars = ['&', '<', '>', '"', '\''];
+const xmlescapes = ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;']
+const xmlchars = ['&', '<', '>', '"', '\''];
 
-function parseUDPPacket(msg)	{
-	let p = new Object();
-	//console.log(msg.toString('hex'));
-	// 1-rf2 2-rf1 3-ams
-	p.version = msg.readUInt8(0);
-	p.pnum = msg.readUInt8(1);
-	p.sequence = msg.readUInt16LE(2);
-	p.type = msg.readUInt8(4);
+class PacketState {
+	current;
+	version;
+	pnum;
+	sequence;
+	type;
+
+	constructor() {
+
+	}
+
+	enqueue(msg) {
+		let p = this.readMeta(msg);
+		if(this.current) {
+			if(this.version != p.version || this.type != p.type) {
+				if(p.pnum != 0) {
+					console.log('got non-leading of different packet');
+					this.current = null;
+				} else {
+					console.log('got leading of different packet');
+					this.reset(p, msg);
+				}
+			} else if(this.sequence != p.sequence) {
+				if(p.pnum != 0) {
+					console.log('got non-leading of different sequence');
+					this.current = null;
+				} else {
+					console.log('got leading of different sequence');
+					this.reset(p, msg);
+				}
+			} else if(this.pnum+1 != p.pnum && p.pnum != 0) {
+				console.log('got out of order');
+				this.current = null;
+			} else if(this.pnum+1 != p.pnum && p.pnum == 0) {
+				console.log('got different sequence');
+				this.reset(p, msg);
+			} else {
+				this.pnum = p.pnum;
+				this.current[this.pnum] = msg;
+			}
+		} else {
+			this.reset(p, msg);
+		}
+		if(this.current && p.continue === 1)
+			return true
+		return false;
+	}
+
+	reset(p, msg) {
+		this.current = new Object();
+		this.version = p.version;
+		this.pnum = p.pnum;
+		this.sequence = p.sequence;
+		this.type = p.type;
+		this.current[this.pnum] = msg;
+	}
+
+	clear() {
+		this.current = null;
+		this.version = null;
+		this.pnum = null;
+		this.sequence = null;
+		this.type = null;
+	}
+
+	readMeta(msg) {
+		let p = new Object();
+		//console.log(msg.toString('hex'));
+		// 1-rf2 2-rf1 3-ams
+		p.version = msg.readUInt8(0);
+		p.pnum = msg.readUInt8(1);
+		p.sequence = msg.readUInt16LE(2);
+		p.type = msg.readUInt8(4);
+		p.continue = msg.readUInt8(msg.length-1);
+		//console.log(msg.length, p.version, p.pnum, p.sequence, p.type, p.continue, '-', this.pnum);
+		return p;
+	}
+
+	dequeue() {
+		if(!this.current || this.current.length === 0)
+			return null;
+		if(this.pnum === 0) {
+			let buffer = this.current[this.pnum];
+			this.clear();
+			return buffer;
+		}
+		let buffers = new Array();
+		buffers[0] = this.current[0].subarray(0, this.current[0].length-1);
+		//console.log('buf', this.pnum, this.current[0].length, this.current[1].length, this.current[2].length, this.current[3].length);
+		for(let i = 1; i <= this.pnum; i++)
+			buffers[i] = this.current[i].subarray(5, this.current[i].length-(i == this.pnum ? 0 : 1));
+		this.clear();
+		return Buffer.concat(buffers);
+	}
+}
+
+function parseUDPPacket(msg) {
+	if(state.enqueue(msg)) {
+		let p = state.dequeue();
+		if(p)
+			return parsePacket(p);
+	}
+}
+
+function parsePacket(msg) {
+	let p = state.readMeta(msg);
 	if(p.type == 2)
 		return parseScoringPacket(msg, p);
 	else 
@@ -216,7 +314,7 @@ function parseScoringPacket(msg, p)	{
 		p.veh.push(veh);
 	}
 	pointer += 4;
-	p.results = msg.toString('ascii', pointer);
+	p.results = msg.toString('ascii', pointer, msg.length-1);
 	return p;
 }
 
@@ -314,6 +412,7 @@ function getVehPos(veh) {
 	return pos;
 }
 
+const state = new PacketState();
 module.exports = {
 	parseUDPPacket: parseUDPPacket,
 	parseEventStream: parseEventStream,

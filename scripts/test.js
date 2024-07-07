@@ -58,14 +58,15 @@ p.veh[0].isAI = false;
 p.veh[0].inpit = 0;
 p.veh[0].sector = 1;
 p.veh[0].status = 0;
-p.results = '';
+p.results = '<t></t>';
 
 console.log('serialize');
 let serialized = p.serialize();
-console.log(serialized.packets.length);
 
-console.log('deserialize');
-let deserialized = p.deserialize(serialized.packets[0].buffer.subarray(0, serialized.packets[0].length));
+console.log('deserialize', serialized.packets.length);
+let deserialized;
+for(let packet of serialized.packets)
+	deserialized = p.deserialize(packet.buffer.subarray(0, packet.length));
 
 function compare(ex, ac) {
 	for(let prop in ex) {
@@ -89,7 +90,7 @@ function compare(ex, ac) {
 			if(typeof ex[prop] === 'object')
 				compare(ex[prop], ac[prop]);
 			else if(ex[prop] !== ac[prop])
-				console.log('Not equal: ' + prop + '.', 'Expected:', ex[prop], 'Actual:', ac[prop]);
+				console.log('Not equal: ' + prop + '.', 'Expected:', JSON.stringify(ex[prop]), 'Actual:', JSON.stringify(ac[prop]));
 		} else
 			console.log('Mismatched type: ' + prop + '.', 'Expected:', ex[prop], 'Actual:', ac[prop]);
 	}
