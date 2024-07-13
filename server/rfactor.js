@@ -241,11 +241,23 @@ function parseScoringPacket(msg, p)	{
 		break;
 		default: p.yellowname = "Unknown";
 	}
+	// sector flags
+	// rf2: [s1,s2,s3] 1-yellow 2-? 3-? 11-green
+	// rf1/ams: [s3,s1,s2] 0-green 2-yellow
 	p.sectorflag = [msg.readUInt8(++pointer), msg.readUInt8(++pointer), msg.readUInt8(++pointer)];
+	if(p.version == 2 || p.version == 3) {
+		p.sectorflag = [p.sectorflag[1], p.sectorflag[2], p.sectorflag[0]];
+		for(let i = 0; i < p.sectorflag.length; i++)
+			switch(p.sectorflag[i]) {
+				case 0: p.sectorflag[i] = 11; break;
+				case 2: p.sectorflag[i] = 1; break;
+			}
+	}
 	p.startlight = msg.readUInt8(++pointer);
 	p.numredlights = msg.readUInt8(++pointer);
 	pointer++;
-	//console.log(p.sessionname + ' ' + p.startlight + '\t' + p.numredlights);
+	//if((p.version != 1 && p.sectorflag[0] + p.sectorflag[1] + p.sectorflag[2] > 0) || (p.version == 1 && (p.sectorflag[0] != 11 || p.sectorflag[1] != 11 || p.sectorflag[2] != 11)))
+	//	console.log(p.sessionname, p.sectorflag[0], p.sectorflag[1], p.sectorflag[2]);
 	p.veh = [];
 	for(let i = 0; i < p.numveh; i++) {
 		let veh = new Object();
