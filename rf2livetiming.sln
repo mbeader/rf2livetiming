@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "rf2livetiming", "rf2livetiming.njsproj", "{B0ADD8F5-FFD1-440B-B906-7603A9C5677B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0ADD8F5-FFD1-440B-B906-7603A9C5677B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0ADD8F5-FFD1-440B-B906-7603A9C5677B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0ADD8F5-FFD1-440B-B906-7603A9C5677B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0ADD8F5-FFD1-440B-B906-7603A9C5677B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7915181C-4704-4E70-8914-A78520664536}
+	EndGlobalSection
+EndGlobal

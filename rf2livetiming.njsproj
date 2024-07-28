@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{b0add8f5-ffd1-440b-b906-7603a9c5677b}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>index.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="package-lock.json" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="index.js" />
+    <Content Include="client\common.js" />
+    <Content Include="client\home.js" />
+    <Content Include="client\laps.js" />
+    <Content Include="client\live.js" />
+    <Content Include="client\map.js" />
+    <Content Include="client\session.js" />
+    <Content Include="client\socket.js" />
+    <Content Include="config\classes.js" />
+    <Content Include="config\index.js" />
+    <Content Include="data\state.json" />
+    <Content Include="scripts\kill.js" />
+    <Content Include="scripts\packet.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="scripts\setup.js" />
+    <Content Include="scripts\sim.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="scripts\test.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\hotlaps.js" />
+    <Content Include="server\mapbuilder.js" />
+    <Content Include="server\rfactor.js" />
+    <Content Include="server\server.js" />
+    <Content Include="server\tracker.js" />
+    <Content Include="www\css\tomorrownight.css">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="www\tools.html" />
+    <Content Include="www\index.html" />
+    <Content Include="www\laps.html" />
+    <Content Include="www\live.html" />
+    <Content Include="www\map.html" />
+    <Content Include="config\examples\classes.js" />
+    <Content Include="config\examples\index.js" />
+    <Content Include="data\hotlaps\Canadian Tire Motorsport Park.json" />
+    <Content Include="data\hotlaps\Daytona International Speedway.json" />
+    <Content Include="data\hotlaps\Lime Rock Park -- No Chicanes.json" />
+    <Content Include="data\hotlaps\Mores -- Short Layout.json" />
+    <Content Include="data\hotlaps\S2 No1 Lakeside F.json" />
+    <Content Include="data\hotlaps\S2 No1 Lakeside.json" />
+    <Content Include="data\hotlaps\Watkins Glen International.json" />
+    <Content Include="data\hotlaps\Zandvoort Club.json" />
+    <Content Include="data\maps\Adelaide Super Truck.json" />
+    <Content Include="data\maps\Adria Full Circuit.json" />
+    <Content Include="data\maps\Autodromo Yahuacocha.json" />
+    <Content Include="data\maps\Botniaring Long.json" />
+    <Content Include="data\maps\Buenos Aires Circuito No 15.json" />
+    <Content Include="data\maps\Canadian Tire Motorsport Park.json" />
+    <Content Include="data\maps\CREMONA.json" />
+    <Content Include="data\maps\Daytona International Speedway.json" />
+    <Content Include="data\maps\Daytona Road Course DX11.json" />
+    <Content Include="data\maps\Donington Park GP.json" />
+    <Content Include="data\maps\Guia Circuit.json" />
+    <Content Include="data\maps\HockenheimRing NATIONAL.json" />
+    <Content Include="data\maps\Imola 2018.json" />
+    <Content Include="data\maps\Kyalami Grand Prix Circuit.json" />
+    <Content Include="data\maps\Lime Rock Park -- No Chicanes.json" />
+    <Content Include="data\maps\Magnificent Palanga Canyon.json" />
+    <Content Include="data\maps\Mills Outer Loop A.json" />
+    <Content Include="data\maps\Mores -- Short Layout.json" />
+    <Content Include="data\maps\Motorland GP.json" />
+    <Content Include="data\maps\MountPanorama.json" />
+    <Content Include="data\maps\NJMP_LIGHTNING.json" />
+    <Content Include="data\maps\Oran Park GP Circuit.json" />
+    <Content Include="data\maps\Oulton Park International NC.json" />
+    <Content Include="data\maps\Portland Full Course.json" />
+    <Content Include="data\maps\Road Atlanta 2017.json" />
+    <Content Include="data\maps\S2 No1 Lakeside F.json" />
+    <Content Include="data\maps\S2 No1 Lakeside.json" />
+    <Content Include="data\maps\San Francisco Grand Prix Circuit B.json" />
+    <Content Include="data\maps\Spa Francorchamps.json" />
+    <Content Include="data\maps\Spielberg Grand Prix Circuit.json" />
+    <Content Include="data\maps\Surfers Paradise International Raceway.json" />
+    <Content Include="data\maps\Taruma Chicane.json" />
+    <Content Include="data\maps\Taruma.json" />
+    <Content Include="data\maps\Tsukuba.json" />
+    <Content Include="data\maps\Watkins Glen International.json" />
+    <Content Include="data\maps\Zandvoort Club.json" />
+    <Content Include="www\css\tomorrow.css" />
+    <Content Include="www\css\main.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="client" />
+    <Folder Include="config" />
+    <Folder Include="config\examples" />
+    <Folder Include="data" />
+    <Folder Include="data\hotlaps" />
+    <Folder Include="data\maps" />
+    <Folder Include="scripts" />
+    <Folder Include="server" />
+    <Folder Include="www" />
+    <Folder Include="www\css" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
