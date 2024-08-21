@@ -35,7 +35,7 @@ else {
 	db.data = new Object();
 }
 
-function onUpdate(track, session, drivers, events) {
+function onUpdate(track, session, drivers, events, veh) {
 	let updates = [];
 	if(state.lasttrack != track || state.lastsession != session) {
 		if(state.lasttrack != track)
@@ -47,21 +47,38 @@ function onUpdate(track, session, drivers, events) {
 			if (err) throw err;
 		});
 	}
-	for(let i = 0; i < events.length; i++) {
-		if(typeof pendinglaps[events[i].name] === "undefined") {
-			if(events[i].point == 1) {
-				pendinglaps[events[i].name] = new Object();
-				pendinglaps[events[i].name].s1 = events[i].t;
+	if(typeof veh !== "undefined") {
+		for(let i = 0; i < veh.length; i++) {
+			if(veh[i].lastlap > 0 && veh[i].lasts2 > 0 && veh[i].lasts1 > 0) {
+				let name = veh[i].drivername;
+				pendinglaps[name] = new Object();
+				pendinglaps[name].s1 = veh[i].lasts1;
+				pendinglaps[name].s2 = veh[i].lasts2-veh[i].lasts1;
+				pendinglaps[name].s3 = veh[i].lastlap-veh[i].lasts2;
+				pendinglaps[name].t = veh[i].lastlap;
+				let res = updateDB(pendinglaps[name], name, drivers[name]);
+				if(typeof res !== "undefined")
+					updates.push(res);
+				delete pendinglaps[veh[i].name];
 			}
-		} else if(typeof pendinglaps[events[i].name].s1	!== "undefined" && events[i].point == 2) {
-			pendinglaps[events[i].name].s2 = events[i].t - pendinglaps[events[i].name].s1;
-		} else if(typeof pendinglaps[events[i].name].s1	!== "undefined" && typeof pendinglaps[events[i].name].s2	!== "undefined" && events[i].point == 0) {
-			pendinglaps[events[i].name].s3 = events[i].t - pendinglaps[events[i].name].s2 - pendinglaps[events[i].name].s1;
-			pendinglaps[events[i].name].t = events[i].t;
-			let res = updateDB(pendinglaps[events[i].name], events[i].name, drivers[events[i].name]);
-			if(typeof res !== "undefined")
-				updates.push(res);
-			delete pendinglaps[events[i].name];
+		}
+	} else {
+		for(let i = 0; i < events.length; i++) {
+			if(typeof pendinglaps[events[i].name] === "undefined") {
+				if(events[i].point == 1) {
+					pendinglaps[events[i].name] = new Object();
+					pendinglaps[events[i].name].s1 = events[i].t;
+				}
+			} else if(typeof pendinglaps[events[i].name].s1 !== "undefined" && events[i].point == 2) {
+				pendinglaps[events[i].name].s2 = events[i].t - pendinglaps[events[i].name].s1;
+			} else if(typeof pendinglaps[events[i].name].s1 !== "undefined" && typeof pendinglaps[events[i].name].s2 !== "undefined" && events[i].point == 0) {
+				pendinglaps[events[i].name].s3 = events[i].t - pendinglaps[events[i].name].s2 - pendinglaps[events[i].name].s1;
+				pendinglaps[events[i].name].t = events[i].t;
+				let res = updateDB(pendinglaps[events[i].name], events[i].name, drivers[events[i].name]);
+				if(typeof res !== "undefined")
+					updates.push(res);
+				delete pendinglaps[events[i].name];
+			}
 		}
 	}
 	if(state.dirty)

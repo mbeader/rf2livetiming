@@ -233,11 +233,11 @@ userver.on('message', (msg, rinfo) => {
 	let events = rfactor.parseEventStream(packet.results);
 	if(typeof events === "undefined")
 		console.log('udef');
-	if(typeof events.score[0] === "undefined")
+	if(typeof events.score[0] === "undefined" && packet.version !== 3)
 		;
 	else {
 		try {
-			let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, events.score);
+			let updates = hotlaps.onUpdate(packet.trackname, packet.sessionname, drivers, events.score, packet.veh);
 			if(typeof updates !== "undefined") {
 				io.to('hotlaps').emit('hotlap', updates);
 			}
