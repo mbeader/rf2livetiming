@@ -2,10 +2,6 @@ const http = require('http');
 var server = http.createServer(handler);
 var io = require('socket.io')(server);
 const log4js = require('log4js');
-log4js.configure({
-	appenders: { rf2lt: { type: 'file', filename: 'error.log' } },
-	categories: { default: { appenders: ['rf2lt'], level: 'debug' } }
-});
 const log = log4js.getLogger('rf2lt');
 const dgram = require('dgram');
 const fs = require('fs');
@@ -17,6 +13,15 @@ const hotlaps = require('./hotlaps');
 const mapbuilder = require('./mapbuilder');
 const Tracker = require('./tracker');
 const classcolors = require('../config/classes');
+
+fs.mkdir('data', errCheck);
+fs.mkdir(path.join('data', 'hotlaps'), errCheck);
+fs.mkdir(path.join('data', 'maps'), errCheck);
+
+function errCheck(err) {
+	if(err instanceof Error && err.code !== "EEXIST")
+		throw err;
+}
 
 var state = new Object();
 state.track = '';
@@ -252,7 +257,7 @@ userver.on('message', (msg, rinfo) => {
 	if(events.chat.length > 0)
 		io.to('chat').emit('message', events.chat);
 	timer = setTimeout(function() {
-		console.log('rF2 server offline');
+		console.log('Game server offline');
 		state = new Object();
 		state.track = hotlaps.getTrack();
 		state.session = '';
@@ -276,7 +281,7 @@ userver.on('message', (msg, rinfo) => {
 
 userver.on('listening', () => {
 	const address = userver.address();
-	console.log('RF2	listening on ' + config.RF2_LISTEN_PORT);
+	console.log('Data listening on ' + config.RF2_LISTEN_PORT);
 });
 
 userver.bind(config.RF2_LISTEN_PORT);

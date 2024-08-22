@@ -14,7 +14,7 @@ try {
 		state = new Object();
 		state.lasttrack = '';
 	} else
-		state = JSON.parse(fs.readFileSync(path.join('data', 'state.json')));
+		state = JSON.parse(f);
 } catch(err) {
 	if (err.code === 'ENOENT') {
 		console.log('No hotlaps state found');
@@ -145,7 +145,6 @@ function updateDB(lap, name, veh) {
 		}
 		if(lap.t < oldlap.t) {
 			db.data[name][veh.vehclass][veh.name].lap = lap;
-			new Date().getTime()/1000|0
 			dirty = true;
 		}
 	}
