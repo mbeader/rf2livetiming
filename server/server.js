@@ -39,6 +39,9 @@ var timer;
 var exists = false;
 var sessionbests = new Tracker();
 var lock = null;
+if(hotlaps.getTrack()) {
+	mapbuilder.start(hotlaps.getTrack());
+}
 
 server.listen(config.HTTP_LISTEN_PORT);
 console.log('HTTP listening on ' + config.HTTP_LISTEN_PORT);
@@ -145,6 +148,11 @@ io.on('connection', function (socket) {
 			socket.emit('classes', classcolors);
 			if(exists)
 				socket.emit('map', mapbuilder.getTrackMap());
+			//else {
+			//	let map = mapbuilder.getTrackMap(hotlaps.getTrack());
+			//	if(map)
+			//		socket.emit('map', map);
+			//}
 		} else if(room == 'live')
 			socket.emit('bests', sessionbests.bests);
 	});

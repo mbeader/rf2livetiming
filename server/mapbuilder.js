@@ -53,10 +53,11 @@ function start(track) {
 
 function onUpdate(veh) {
 	for(let i = 0; i < veh.length; i++) {
-		if(veh[i].laps == 0)
-			;
-		else if(typeof currpaths[veh[i].drivername] === "undefined") {
-			currpaths[veh[i].drivername] = createPath(veh[i].laps, veh[i].posx, veh[i].posy);
+		if(typeof currpaths[veh[i].drivername] === "undefined")
+			currpaths[veh[i].drivername] = veh[i].laps;
+		else if(typeof currpaths[veh[i].drivername] === "number") {
+			if(currpaths[veh[i].drivername] < veh[i].laps)
+				currpaths[veh[i].drivername] = createPath(veh[i].laps, veh[i].posx, veh[i].posy);
 		} else if(currpaths[veh[i].drivername].lap == veh[i].laps) {
 			if(veh[i].sector == 1)
 				currpaths[veh[i].drivername].s1.push({x: veh[i].posx, y: veh[i].posy});
