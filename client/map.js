@@ -180,11 +180,10 @@ function drawTrack() {
 		drawSector(track.s1, track.s2[0], 'navy');
 		drawSector(track.s2, track.s3[0], 'green');
 		drawSector(track.s3, track.s1[0], 'maroon');
-		
-		context.fillStyle = 'gray';
-		drawSectorMarker(track.s3[track.s3.length-1], track.s1[0], track.s1[1]);
-		drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1]);
-		drawSectorMarker(track.s2[track.s2.length-1], track.s3[0], track.s3[1]);
+
+		drawSectorMarker(track.s3[track.s3.length-1], track.s1[0], track.s1[1], 'white', 'black');
+		drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1], 'gray');
+		drawSectorMarker(track.s2[track.s2.length-1], track.s3[0], track.s3[1], 'gray');
 	}
 }
 
@@ -197,13 +196,24 @@ function drawSector(sector, end, color) {
 	context.stroke();
 }
 
-function drawSectorMarker(prev, center, next) {
+function drawSectorMarker(prev, center, next, primary, secondary) {
 	let angle = Math.atan2(next.y - prev.y, next.x - prev.x);
+	let point = { x: calcX(center.x), y: calcY(center.y) };
+	let length = 30, width = 6;
+	let xoffset = width/2, yoffset = length/2;
 	context.save();
-	context.translate(...calcPoint(center.x, center.y));
+	context.translate(point.x, point.y);
 	context.rotate(angle);
-	context.translate(-1*calcX(center.x), -1*calcY(center.y));
-	context.fillRect(calcX(center.x)-3, calcY(center.y)-15, 6, 30);
+	context.translate(-1*point.x, -1*point.y);
+	context.fillStyle = primary;
+	context.fillRect(point.x-xoffset, point.y-yoffset, width, length);
+	if(secondary) {
+		let rows = 2;
+		let cols = length/width*rows, size = width/rows;
+		context.fillStyle = secondary;
+		for(let i = 0; i < cols; i++)
+			context.fillRect(point.x-xoffset+(i%2 == 0 ? size : 0), point.y-yoffset+(i*size), size, size);
+	}
 	context.restore();
 }
 
