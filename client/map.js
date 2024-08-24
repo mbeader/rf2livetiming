@@ -46,31 +46,39 @@ socket.on('veh', function (veh) {
 				changed = true;
 			}
 		}
+		let x = calcX(veh[num].x-cx);
+		let y = calcY(-1*veh[num].y+cy);
 		context.strokeStyle = 'black';
 		context.fillStyle = fillcolor;
 		context.lineWidth = 2;
 		context.beginPath();
-		context.arc(veh[num].x*scalefactor+dim-scaled.cx, dim-veh[num].y*scalefactor+scaled.cy, 10, 0, Math.PI * 2, true);
+		context.arc(x, y, 10, 0, Math.PI * 2, true);
 		context.stroke();
 		context.fill();
 		context.fillStyle = textcolor;
 		context.font = '12px serif';
 		context.textAlign = 'center';
-		context.fillText(num, veh[num].x*scalefactor+dim-scaled.cx, dim-veh[num].y*scalefactor+scaled.cy+4);
+		context.fillText(num, x, y+4);
 	});
 	if(changed) {
+		dx = edges.maxx - edges.minx;
+		dy = edges.maxy - edges.miny;
 		cx = (edges.maxx + edges.minx)/2;
 		cy = (edges.maxy + edges.miny)/2;
-		calcScaleFactor(edges.maxx - edges.minx, edges.maxy - edges.miny);
+		calcScaleFactor(dx, dy);
 	}
 });
 
 socket.on('map', function (map) {
 	track = map;
+	let orig = new Object();
+	Object.assign(map, orig);
+	track.orig = orig;
 	dx = track.maxx - track.minx;
 	dy = track.maxy - track.miny;
 	cx = (track.maxx + track.minx)/2;
 	cy = (track.maxy + track.miny)/2;
+	processTrack(track);
 	calcScaleFactor(dx, dy);
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	drawTrack();
@@ -100,6 +108,44 @@ function initMapLoad(e) {
 	}
 }
 
+function processTrack(track) {
+	let sectors = [ track.s1, track.s2, track.s3 ];
+	for(let i = 0; i < sectors.length; i++) {
+		processPoints(sectors[i]);
+	}
+	track.maxx = track.s1[0].x;
+	track.minx = track.s1[0].x;
+	track.maxy = track.s1[0].y;
+	track.miny = track.s1[0].y;
+	for(let i = 0; i < sectors.length; i++) {
+		recalcSectorLimits(track, sectors[i]);
+	}
+}
+
+function processPoints(sector) {
+	for(let i = 0; i < sector.length; i++)
+		processPoint(sector[i]);
+}
+
+function processPoint(point) {
+	point.x -= cx;
+	point.y *= -1;
+	point.y += cy;
+}
+
+function recalcSectorLimits(track, sector) {
+	for(let i = 0; i < sector.length; i++) {
+		if(sector[i].x > track.maxx)
+			track.maxx = sector[i].x;
+		else if(sector[i].x < track.minx)
+			track.minx = sector[i].x;
+		if(sector[i].y > track.maxy)
+			track.maxy = sector[i].y;
+		else if(sector[i].y < track.miny)
+			track.miny = sector[i].y;
+	}
+}
+
 function resizeMap() {
 	let tempwidth = document.getElementById('map-wrapper').offsetWidth;
 	if(document.documentElement.scrollHeight > document.documentElement.clientHeight)
@@ -120,8 +166,8 @@ function resizeMap() {
 }
 function resizeMapHome() {
 	canvas.width = document.getElementById('map-wrapper').offsetWidth;
-	canvas.height = canvas.width;
-	dim = canvas.width/2;
+	canvas.height = canvas.width > 400 ? 400 : canvas.width;
+	dim = canvas.height/2;
 	if(typeof track !== "undefined") {
 		calcScaleFactor(dx, dy);
 		drawTrack();
@@ -144,28 +190,41 @@ function drawTrack() {
 
 function drawSector(sector, end, color) {
 	context.strokeStyle = color;
-		context.beginPath();
-		for(let i = 0; i < sector.length; i++)
-			context.lineTo(sector[i].x*scalefactor+dim-scaled.cx, dim-scalefactor*sector[i].y+scaled.cy);
-		context.lineTo(end.x*scalefactor+dim-scaled.cx, dim-scalefactor*end.y+scaled.cy);
-		context.stroke();
+	context.beginPath();
+	for(let i = 0; i < sector.length; i++)
+		context.lineTo(...calcPoint(sector[i].x, sector[i].y));
+	context.lineTo(...calcPoint(end.x, end.y));
+	context.stroke();
 }
 
 function drawSectorMarker(prev, center, next) {
-	let angle = -1*Math.atan2(next.y - prev.y, next.x - prev.x);
+	let angle = Math.atan2(next.y - prev.y, next.x - prev.x);
 	context.save();
-	context.translate(center.x*scalefactor+dim-scaled.cx, dim-center.y*scalefactor+scaled.cy);
+	context.translate(...calcPoint(center.x, center.y));
 	context.rotate(angle);
-	context.translate(-1*(center.x*scalefactor+dim-scaled.cx), -1*(dim-center.y*scalefactor+scaled.cy));
-	context.fillRect(center.x*scalefactor+dim-scaled.cx-3, dim-center.y*scalefactor+scaled.cy-15, 6, 30);
+	context.translate(-1*calcX(center.x), -1*calcY(center.y));
+	context.fillRect(calcX(center.x)-3, calcY(center.y)-15, 6, 30);
 	context.restore();
 }
 
+function calcPoint(x, y) {
+	return [ calcX(x), calcY(y) ];
+}
+
+function calcX(x) {
+	return x*scalefactor+canvas.width/2;
+}
+
+function calcY(y) {
+	return y*scalefactor+canvas.height/2;
+}
+
 function calcScaleFactor(dx, dy) {
-	if(dx > dy)
-		scalefactor = (canvas.width*.8)/dx;
+	let multiplier = .8;
+	if(dx/dy > canvas.width/canvas.height)
+		scalefactor = canvas.width/dx*multiplier;
 	else
-		scalefactor = (canvas.height*.8)/dy;
+		scalefactor = canvas.height/dy*multiplier;
 	let wx = 0, wy = 0;
 	if(canvas.width > canvas.height)
 		wx = canvas.width/4;

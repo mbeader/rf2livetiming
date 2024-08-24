@@ -40,7 +40,7 @@ var exists = false;
 var sessionbests = new Tracker();
 var lock = null;
 if(hotlaps.getTrack()) {
-	mapbuilder.start(hotlaps.getTrack());
+	exists = mapbuilder.start(hotlaps.getTrack());
 }
 
 server.listen(config.HTTP_LISTEN_PORT);
