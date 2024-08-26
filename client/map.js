@@ -7,12 +7,15 @@ var scaled = new Object();
 var classcolors;
 var colors = ['red', 'blue', 'lime', 'yellow', 'magenta', 'aqua', 'orange', 'white', 'gray', 'silver'];
 var edges = {maxx: Number.MIN_SAFE_INTEGER, minx: Number.MAX_SAFE_INTEGER, maxy: Number.MIN_SAFE_INTEGER, miny: Number.MAX_SAFE_INTEGER};
+var staticcanvas = new Object();
+staticcanvas.canvas = document.createElement('canvas');
+staticcanvas.context = staticcanvas.canvas.getContext('2d');
 
 socket.emit('join', 'map');
 
 socket.on('veh', function (veh) {
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	drawTrack();
+	context.drawImage(staticcanvas.canvas, 0, 0);
 
 	let fillcolor, textcolor;
 	let changed = false;
@@ -86,6 +89,7 @@ socket.on('map', function (map) {
 
 socket.on('clear', function () {
 	context.clearRect(0, 0, canvas.width, canvas.height);
+	staticcanvas.context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
 socket.on('classes', function (colors) {
@@ -100,12 +104,15 @@ function initMapLoad(e) {
 	canvas = document.getElementById('map');
 	context = canvas.getContext('2d');
 	if(window.location.pathname == '/map') {
-		resizeMap();
-		window.addEventListener('resize', resizeMap, true);
+		resizeMapMap();
+		window.addEventListener('resize', resizeMapMap, true);
 	} else {
 		resizeMapHome();
 		window.addEventListener('resize', resizeMapHome, true);
 	}
+	staticcanvas.canvas.width = canvas.width;
+	staticcanvas.canvas.height = canvas.height;
+	staticcanvas.context = staticcanvas.canvas.getContext('2d');
 }
 
 function processTrack(track) {
@@ -146,7 +153,7 @@ function recalcSectorLimits(track, sector) {
 	}
 }
 
-function resizeMap() {
+function resizeMapMap() {
 	let tempwidth = document.getElementById('map-wrapper').offsetWidth;
 	if(document.documentElement.scrollHeight > document.documentElement.clientHeight)
 		while(document.documentElement.scrollHeight > document.documentElement.clientHeight)
@@ -156,17 +163,19 @@ function resizeMap() {
 			canvas.height++;
 		} while(document.documentElement.scrollHeight == document.documentElement.clientHeight);
 	}
-	canvas.width = tempwidth > canvas.height ? canvas.height : tempwidth;
-	canvas.height = canvas.width;
-	dim = canvas.width/2;
-	if(typeof track !== "undefined") {
-		calcScaleFactor(dx, dy);
-		drawTrack();
-	}
+	let size = tempwidth > canvas.height ? canvas.height : tempwidth;
+	resizeMap(size, size);
 }
+
 function resizeMapHome() {
-	canvas.width = document.getElementById('map-wrapper').offsetWidth;
-	canvas.height = canvas.width > 400 ? 400 : canvas.width;
+	resizeMap(document.getElementById('map-wrapper').offsetWidth, canvas.width > 400 ? 400 : canvas.width);
+}
+
+function resizeMap(width, height) {
+	canvas.width = width;
+	canvas.height = height;
+	staticcanvas.canvas.width = canvas.width;
+	staticcanvas.canvas.height = canvas.height;
 	dim = canvas.height/2;
 	if(typeof track !== "undefined") {
 		calcScaleFactor(dx, dy);
@@ -175,8 +184,9 @@ function resizeMapHome() {
 }
 
 function drawTrack() {
+	staticcanvas.context.clearRect(0, 0, canvas.width, canvas.height);
 	if(typeof track !== "undefined") {
-		context.lineWidth = 15;
+		staticcanvas.context.lineWidth = 15;
 		drawSector(track.s1, track.s2[0], 'navy');
 		drawSector(track.s2, track.s3[0], 'green');
 		drawSector(track.s3, track.s1[0], 'maroon');
@@ -187,19 +197,20 @@ function drawTrack() {
 		drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1], 'gray');
 		drawSectorMarker(track.s2[track.s2.length-1], track.s3[0], track.s3[1], 'gray');
 	}
+	context.drawImage(staticcanvas.canvas, 0, 0);
 }
 
 function drawSector(sector, end, color) {
-	context.strokeStyle = color;
-	context.beginPath();
+	staticcanvas.context.strokeStyle = color;
+	staticcanvas.context.beginPath();
 	for(let i = 0; i < sector.length; i++)
-		context.lineTo(...calcPoint(sector[i].x, sector[i].y));
-	context.lineTo(...calcPoint(end.x, end.y));
-	context.stroke();
+		staticcanvas.context.lineTo(...calcPoint(sector[i].x, sector[i].y));
+	staticcanvas.context.lineTo(...calcPoint(end.x, end.y));
+	staticcanvas.context.stroke();
 }
 
 function drawChevrons(track) {
-	context.fillStyle = 'rgba(180, 180, 180, 0.3)';
+	staticcanvas.context.fillStyle = 'rgba(180, 180, 180, 0.3)';
 	drawChevron(track.s1[3], track.s1[4], track.s1[5]);
 	drawChevron(track.s1[0], track.s1[1], track.s1[2]);
 	drawChevron(track.s3[track.s3.length-3], track.s3[track.s3.length-2], track.s3[track.s3.length-1]);
@@ -209,19 +220,19 @@ function drawChevron(prev, center, next) {
 	let width = 40, height = 20;
 	let angle = Math.atan2(next.y - prev.y, next.x - prev.x)+Math.PI/2;
 	let point = { x: calcX(center.x), y: calcY(center.y+height/2) };
-	context.save();
-	context.translate(point.x, point.y);
-	context.rotate(angle);
-	context.translate(-1*point.x, -1*point.y);
-	context.beginPath();
-	context.lineTo(point.x+width/2, point.y+height/2);
-	context.lineTo(point.x+width/2, point.y+height);
-	context.lineTo(point.x, point.y+height/2);
-	context.lineTo(point.x-width/2, point.y+height);
-	context.lineTo(point.x-width/2, point.y+height/2);
-	context.lineTo(point.x, point.y);
-	context.fill();
-	context.restore();
+	staticcanvas.context.save();
+	staticcanvas.context.translate(point.x, point.y);
+	staticcanvas.context.rotate(angle);
+	staticcanvas.context.translate(-1*point.x, -1*point.y);
+	staticcanvas.context.beginPath();
+	staticcanvas.context.lineTo(point.x+width/2, point.y+height/2);
+	staticcanvas.context.lineTo(point.x+width/2, point.y+height);
+	staticcanvas.context.lineTo(point.x, point.y+height/2);
+	staticcanvas.context.lineTo(point.x-width/2, point.y+height);
+	staticcanvas.context.lineTo(point.x-width/2, point.y+height/2);
+	staticcanvas.context.lineTo(point.x, point.y);
+	staticcanvas.context.fill();
+	staticcanvas.context.restore();
 }
 
 function drawSectorMarker(prev, center, next, primary, secondary) {
@@ -229,20 +240,20 @@ function drawSectorMarker(prev, center, next, primary, secondary) {
 	let point = { x: calcX(center.x), y: calcY(center.y) };
 	let length = 30, width = 6;
 	let xoffset = width/2, yoffset = length/2;
-	context.save();
-	context.translate(point.x, point.y);
-	context.rotate(angle);
-	context.translate(-1*point.x, -1*point.y);
-	context.fillStyle = primary;
-	context.fillRect(point.x-xoffset, point.y-yoffset, width, length);
+	staticcanvas.context.save();
+	staticcanvas.context.translate(point.x, point.y);
+	staticcanvas.context.rotate(angle);
+	staticcanvas.context.translate(-1*point.x, -1*point.y);
+	staticcanvas.context.fillStyle = primary;
+	staticcanvas.context.fillRect(point.x-xoffset, point.y-yoffset, width, length);
 	if(secondary) {
 		let rows = 2;
 		let cols = length/width*rows, size = width/rows;
-		context.fillStyle = secondary;
+		staticcanvas.context.fillStyle = secondary;
 		for(let i = 0; i < cols; i++)
-			context.fillRect(point.x-xoffset+(i%2 == 0 ? size : 0), point.y-yoffset+(i*size), size, size);
+			staticcanvas.context.fillRect(point.x-xoffset+(i%2 == 0 ? size : 0), point.y-yoffset+(i*size), size, size);
 	}
-	context.restore();
+	staticcanvas.context.restore();
 }
 
 function calcPoint(x, y) {
