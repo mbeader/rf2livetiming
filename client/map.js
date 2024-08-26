@@ -181,6 +181,8 @@ function drawTrack() {
 		drawSector(track.s2, track.s3[0], 'green');
 		drawSector(track.s3, track.s1[0], 'maroon');
 
+		//drawChevrons(track);
+
 		drawSectorMarker(track.s3[track.s3.length-1], track.s1[0], track.s1[1], 'white', 'black');
 		drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1], 'gray');
 		drawSectorMarker(track.s2[track.s2.length-1], track.s3[0], track.s3[1], 'gray');
@@ -194,6 +196,32 @@ function drawSector(sector, end, color) {
 		context.lineTo(...calcPoint(sector[i].x, sector[i].y));
 	context.lineTo(...calcPoint(end.x, end.y));
 	context.stroke();
+}
+
+function drawChevrons(track) {
+	context.fillStyle = 'rgba(180, 180, 180, 0.3)';
+	drawChevron(track.s1[3], track.s1[4], track.s1[5]);
+	drawChevron(track.s1[0], track.s1[1], track.s1[2]);
+	drawChevron(track.s3[track.s3.length-3], track.s3[track.s3.length-2], track.s3[track.s3.length-1]);
+}
+
+function drawChevron(prev, center, next) {
+	let width = 40, height = 20;
+	let angle = Math.atan2(next.y - prev.y, next.x - prev.x)+Math.PI/2;
+	let point = { x: calcX(center.x), y: calcY(center.y+height/2) };
+	context.save();
+	context.translate(point.x, point.y);
+	context.rotate(angle);
+	context.translate(-1*point.x, -1*point.y);
+	context.beginPath();
+	context.lineTo(point.x+width/2, point.y+height/2);
+	context.lineTo(point.x+width/2, point.y+height);
+	context.lineTo(point.x, point.y+height/2);
+	context.lineTo(point.x-width/2, point.y+height);
+	context.lineTo(point.x-width/2, point.y+height/2);
+	context.lineTo(point.x, point.y);
+	context.fill();
+	context.restore();
 }
 
 function drawSectorMarker(prev, center, next, primary, secondary) {
