@@ -191,7 +191,7 @@ function drawTrack() {
 		drawSector(track.s2, track.s3[0], 'green');
 		drawSector(track.s3, track.s1[0], 'maroon');
 
-		//drawChevrons(track);
+		drawChevrons(track);
 
 		drawSectorMarker(track.s3[track.s3.length-1], track.s1[0], track.s1[1], 'white', 'black');
 		drawSectorMarker(track.s1[track.s1.length-1], track.s2[0], track.s2[1], 'gray');
@@ -210,26 +210,28 @@ function drawSector(sector, end, color) {
 }
 
 function drawChevrons(track) {
-	staticcanvas.context.fillStyle = 'rgba(180, 180, 180, 0.3)';
-	drawChevron(track.s1[3], track.s1[4], track.s1[5]);
-	drawChevron(track.s1[0], track.s1[1], track.s1[2]);
-	drawChevron(track.s3[track.s3.length-3], track.s3[track.s3.length-2], track.s3[track.s3.length-1]);
+	staticcanvas.context.fillStyle = 'rgba(191, 191, 191, 0.7)';
+	drawChevron(track.s3[track.s3.length-1], track.s1[0], track.s1[1], 10);
+	drawChevron(track.s3[track.s3.length-1], track.s1[0], track.s1[1], -10);
 }
 
-function drawChevron(prev, center, next) {
-	let width = 40, height = 20;
-	let angle = Math.atan2(next.y - prev.y, next.x - prev.x)+Math.PI/2;
-	let point = { x: calcX(center.x), y: calcY(center.y+height/2) };
+function drawChevron(prev, center, next, offset) {
+	let width = 10, height = 10;
+	let baseangle = Math.atan2(next.y - prev.y, next.x - prev.x);
+	let angle = baseangle+Math.PI/2;
+	let point = { x: calcX(center.x), y: calcY(center.y) };
+	point.x += Math.cos(baseangle)*offset;
+	point.y += Math.sin(baseangle)*offset;
 	staticcanvas.context.save();
 	staticcanvas.context.translate(point.x, point.y);
 	staticcanvas.context.rotate(angle);
 	staticcanvas.context.translate(-1*point.x, -1*point.y);
 	staticcanvas.context.beginPath();
-	staticcanvas.context.lineTo(point.x+width/2, point.y+height/2);
-	staticcanvas.context.lineTo(point.x+width/2, point.y+height);
-	staticcanvas.context.lineTo(point.x, point.y+height/2);
-	staticcanvas.context.lineTo(point.x-width/2, point.y+height);
 	staticcanvas.context.lineTo(point.x-width/2, point.y+height/2);
+	staticcanvas.context.lineTo(point.x-width/2, point.y);
+	staticcanvas.context.lineTo(point.x, point.y-height/2);
+	staticcanvas.context.lineTo(point.x+width/2, point.y);
+	staticcanvas.context.lineTo(point.x+width/2, point.y+height/2);
 	staticcanvas.context.lineTo(point.x, point.y);
 	staticcanvas.context.fill();
 	staticcanvas.context.restore();
