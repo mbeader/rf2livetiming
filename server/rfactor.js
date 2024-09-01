@@ -378,6 +378,7 @@ function chat2Obj(xml) {
 			return null;
 		xml = 'Server:' + xml.substring(1);
 	}
+	xml = xml.replace('\x7F', '☺'); // rf1 ctrl-backspace smiley (DEL char)
 	/*else
 		e.name = xml.substring(0, xml.indexOf(': '));
 	e.message = xml.substring(xml.indexOf(': ')+3);*/
