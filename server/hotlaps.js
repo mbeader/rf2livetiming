@@ -49,6 +49,8 @@ function onUpdate(track, session, drivers, events, veh) {
 	}
 	if(typeof veh !== "undefined") {
 		for(let i = 0; i < veh.length; i++) {
+			if(config.IGNORE_AI_HOTLAPS && drivers[veh[i].drivername].ai)
+				continue;
 			if(veh[i].lastlap > 0 && veh[i].lasts2 > 0 && veh[i].lasts1 > 0) {
 				let name = veh[i].drivername;
 				pendinglaps[name] = new Object();
@@ -64,6 +66,8 @@ function onUpdate(track, session, drivers, events, veh) {
 		}
 	} else {
 		for(let i = 0; i < events.length; i++) {
+			if(config.IGNORE_AI_HOTLAPS && drivers[events[i].name].ai)
+				continue;
 			if(typeof pendinglaps[events[i].name] === "undefined") {
 				if(events[i].point == 1) {
 					pendinglaps[events[i].name] = new Object();
