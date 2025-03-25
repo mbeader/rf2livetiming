@@ -8,7 +8,7 @@ Displays a track map, generated via vehicle position over a good, fast lap, with
 ## Setup
 
 * Download latest release and referenced plugin release
-* Install [node (including npm)](https://nodejs.org) (tested with v18 LTS)
+* Install [node (including npm)](https://nodejs.org) (tested with v22 LTS)
 * Run `npm install`
 * Configure files in `config/`
 * Setup game based on sections below
@@ -20,7 +20,7 @@ Displays a track map, generated via vehicle position over a good, fast lap, with
 * Configure `rf2livetiming.ini`
 * Logs to `UserData\Log\rf2livetiming.log`
 
-## rFactor/Automobilista
+### rFactor/Automobilista
 
 * Place the compiled `rf1livetiming.dll` in the plugins folder
 * Place `rf1livetiming.ini` in the rF1/AMS root folder
@@ -41,7 +41,6 @@ Displays a track map, generated via vehicle position over a good, fast lap, with
 
 ## TODO
 
-* View hotlap db for any track
 * Move from JSON to a database, likely sqlite3
 * Handle multiple servers
 * Rethink use of objects
