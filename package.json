@@ -1,6 +1,6 @@
 {
   "name": "rf2livetiming",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "rFactor 2 server-side live timing",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,8 @@
   "author": "",
   "license": "AGPL-3.0",
   "dependencies": {
-    "log4js": "^6.8.0",
-    "socket.io": "^4.6.1",
-    "socket.io-client": "^4.6.1"
+    "log4js": "^6.9.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }
