@@ -302,3 +302,7 @@ tr[ai="true"] {
 	cursor: pointer;
 	margin-left: 5px;
 }
+
+.hidden {
+	display: none;
+}

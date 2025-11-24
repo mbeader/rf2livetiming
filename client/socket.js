@@ -32,10 +32,16 @@ function getInfo(e) {
 			document.getElementById('heading').textContent = res.name;
 		}
 		if(document.location.pathname != '/map') {
-			if(res.ip && res.port && res.game)
-				document.getElementById('join').href = 'steam://run/' + res.game + '//+connect ' + res.ip + ':' + res.port;
-			else
-				document.getElementById('join').removeAttribute('href');
+			let join = document.getElementById('join');
+			if(join) {
+				if(res.ip && res.port && res.game) {
+					join.href = 'steam://run/' + res.game + '//+connect ' + res.ip + ':' + res.port;
+					join.removeAttribute('class');
+				} else {
+					join.removeAttribute('href');
+					join.setAttribute('class', 'hidden');
+				}
+			}
 		}
 	});
 	req.open('GET', '/info');
