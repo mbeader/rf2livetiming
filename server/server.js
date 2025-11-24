@@ -206,6 +206,11 @@ userver.on('message', (msg, rinfo) => {
 		hotlaps.onUpdate(packet.trackname, packet.sessionname, null, [])
 	} else {
 		state.currtime = packet.currtime;
+		if(state.phase.name == 'Paused' || state.endtime != packet.endtime || state.maxlaps != packet.maxlaps) {
+			state.endtime = packet.endtime;
+			state.maxlaps =	packet.maxlaps;
+			io.to('live').emit('session', state);
+		}
 		if(state.phase.name != packet.phasename || state.phase.yellow != packet.yellowname || state.phase.sectors[0] != packet.sectorflag[0] || state.phase.sectors[1] != packet.sectorflag[1] || state.phase.sectors[2] != packet.sectorflag[2]) {
 			state.phase.name = packet.phasename;
 			state.phase.yellow = packet.yellowname;
