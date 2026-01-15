@@ -44,6 +44,6 @@ function getInfo(e) {
 			}
 		}
 	});
-	req.open('GET', '/info');
+	req.open('GET', 'info');
 	req.send();
 }

@@ -76,7 +76,7 @@ function initLoad(e) {
 		livetable = document.getElementById('live').getElementsByTagName('tbody')[0];
 		buildHotlapsTable(hotlaps2List(res.data));
 	});
-	req.open('GET', '/init');
+	req.open('GET', 'init');
 	req.send();
 }
 

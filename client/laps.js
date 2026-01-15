@@ -29,7 +29,7 @@ function getTracks(e) {
 			setTrack(res.current);
 		}
 	});
-	req.open('GET', '/tracks');
+	req.open('GET', 'tracks');
 	req.send();
 }
 
@@ -59,7 +59,7 @@ function getLaps(t) {
 		buildLapsTable(laps);
 		updateDisplayline();
 	});
-	req.open('GET', '/laptimes?t=' + encodeURIComponent(t));
+	req.open('GET', 'laptimes?t=' + encodeURIComponent(t));
 	req.send();
 }
 

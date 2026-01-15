@@ -36,7 +36,7 @@ function initLoad(e) {
 			maxlaps = null;
 		livetable = document.getElementById('live-timing').getElementsByTagName('tbody')[0];
 	});
-	req.open('GET', '/init');
+	req.open('GET', 'init');
 	req.send();
 }
 

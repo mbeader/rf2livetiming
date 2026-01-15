@@ -37,7 +37,12 @@ Displays a track map, generated via vehicle position over a good, fast lap, with
 
 * rf2livetiming.dll supports 64-bit rFactor 2
 * rf1livetiming.dll supports last versions of rFactor and Automobilista
-* Tested on Windows 10 and Windows Server 2012 R2
+* Tested on
+	* Windows 10
+	* Windows Server 2012 R2
+	* Linux using the [generic node.js](https://eggs.pterodactyl.io/egg/generic-node-js-generic) [Pterodactyl](https://pterodactyl.io/) egg,
+behind [nginx](https://nginx.org/)
+		* Start Configuration string to match is `Data listening on `
 
 ## TODO
 

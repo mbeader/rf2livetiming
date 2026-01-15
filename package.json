@@ -1,12 +1,12 @@
 {
   "name": "rf2livetiming",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "rFactor 2 server-side live timing",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "stop": "node scripts\\kill.js",
-    "postinstall": "node scripts\\setup.js"
+    "stop": "node scripts/kill.js",
+    "postinstall": "node scripts/setup.js"
   },
   "author": "",
   "license": "AGPL-3.0",
